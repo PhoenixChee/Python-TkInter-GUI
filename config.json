@@ -1,0 +1,36 @@
+{
+  "windowSize": {
+    "width": 1024,
+    "height": 600
+  },
+  "camAspectRatio": {
+    "width": {
+      "brio": 16,
+      "webcam": 4
+    },
+    "height": {
+      "brio": 9,
+      "webcam": 3
+    }
+  },
+  "columnSize": {
+    "col1": 220,
+    "col2": 440
+  },
+  "rowSize": {
+    "label": 30,
+    "progressBar": 20,
+    "checkButton": 30,
+    "toggleButton": 30
+  },
+  "paddingSize": {
+    "labelFrame": 12,
+    "appFrame": 8,
+    "frame": 0
+  },
+  "font": {
+    "family": "Bahnschrift SemiBold",
+    "weight": "bold",
+    "size": 10
+  }
+}
