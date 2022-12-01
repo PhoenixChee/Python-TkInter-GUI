@@ -1,3 +1,5 @@
+from GUI import *
+
 def keyPress(widget, pressed):
     # If the button is disabled don't do anything
     if widget.instate(['disabled']):
@@ -108,30 +110,25 @@ def switchControlMode(toggle):
 
 
 def switchCamera(frame, toggle):
+    global camOn, cam
+    cam = cv2.VideoCapture(0)
+
     if toggle.get() == 1:
-        frame.is_running = True
-        frame.thread = threading.Thread(target=frame.videoLoop, args=())
-        frame.thread.daemon = True
-        frame.thread.start()
+        camOn = True
+        showFrames(frame)
         print("Show Camera On Display: Enabled")
     elif toggle.get() == 0:
-        frame.is_running = False
-        frame.after(20)
-        if frame.thread is not None:
-            frame.thread.join(0.2)
-        frame.winfo_toplevel().destroy()
+        camOn = False
+        cam.release()
         print("Show Camera On Display: Disabled")
 
-def videoLoop(frame, port):
-    cap = cv2.VideoCapture(port)
 
-    while frame.is_running:
-        cv2image = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2RGB)
-        frame.queue.put(image)
-
-def queueNextFrame(frame, eventargs):
-    if not frame.queue.empty():
-        image = frame.queue.get()
-        image = Image.fromarray(image)
-        frame.photo = ImageTk.PhotoImage(image)
-        frame.view.configure(image=frame.photo)
+def showFrames(frame):
+    global camOn, cam
+    if camOn:
+        cv2image = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(cv2image)
+        imgtk = ImageTk.PhotoImage(image=img)
+        frame.imgtk = imgtk
+        frame.configure(image=imgtk)
+        frame.after(10, lambda: showFrames(frame))

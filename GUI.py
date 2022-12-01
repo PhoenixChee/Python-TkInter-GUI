@@ -427,9 +427,9 @@ class Tab2(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                # Camera Switch
+                # # Camera Switch
                 self.toggle_switch_1 = IntVar()
-                self.switch_1 = ttk.Checkbutton(self, style="Switch.TCheckbutton", variable=self.toggle_switch_1, text="Show Cam On Display", command=lambda: switchCamera(OpenCV(parent), self.toggle_switch_1))
+                self.switch_1 = ttk.Checkbutton(self, style="Switch.TCheckbutton", variable=self.toggle_switch_1, text="Show Cam On Display", command=lambda: switchCamera(self.master.opencv.label, self.toggle_switch_1))
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style="Toggle.TButton", text="❌", command=lambda: systemShutdown(root))
@@ -451,25 +451,10 @@ class Tab2(ttk.Frame):
                 self.label = ttk.Label(self)
                 self.label.pack()
 
-                cap = cv2.VideoCapture(0)
-
-                # Define function to show frame
-                def showFrames():
-                    # Get the latest frame and convert into Image
-                    cv2image = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2RGB)
-                    img = Image.fromarray(cv2image)
-
-                    # Convert image to PhotoImage
-                    self.label.imgtk = ImageTk.PhotoImage(image=img)
-                    self.label.configure(image=self.label.imgtk)
-
-                    # Repeat after an interval to capture continiously
-                    self.label.after(50, showFrames)
-
-                showFrames()
-
         Menu_Bar(self).pack(fill='x', side='top')
-        OpenCV(self).pack(fill='x', side='top')
+
+        self.opencv = OpenCV(self)
+        self.opencv.pack(expand=1, fill='both', side='top')
 
 
 class Tab3(ttk.Frame):
