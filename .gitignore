@@ -1,4 +1,4 @@
 # Discarding
 .idea
 __pycache__
-
+*.png

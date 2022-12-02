@@ -1,11 +1,20 @@
-from tkinter import ttk, font, IntVar
-from PIL import Image, ImageTk
-from PLUGINS import *
-
+# TkInter for Python GUI
 import tkinter as tk
 import sv_ttk
-import json
+from tkinter import ttk, font, IntVar
+
+# cv2 & Pillow for OpenCV
 import cv2
+from PIL import Image, ImageTk
+
+# Matplotlib & NumPy for Graph Plotting
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+
+# Other Files
+import json
+from PLUGINS import *
 
 # Open json and store data in python dict
 with open('./config.json', 'r') as f:
@@ -419,10 +428,6 @@ class Tab2(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=0)
-
         class Menu_Bar(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, padding=data['paddingSize']['frame'])
@@ -451,15 +456,57 @@ class Tab2(ttk.Frame):
                 self.label = ttk.Label(self)
                 self.label.pack()
 
-        Menu_Bar(self).pack(fill='x', side='top')
+        # Set Layout UI Boxes
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=0)
 
+        Menu_Bar(self).pack(fill='x', side='top')
         self.opencv = OpenCV(self)
-        self.opencv.pack(expand=1, fill='both', side='top')
+        self.opencv.pack(expand=1, fill='both', side='top', pady=(4, 0))
 
 
 class Tab3(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+
+        class Menu_Bar(ttk.Frame):
+            def __init__(self, parent):
+                super().__init__(parent, padding=data['paddingSize']['frame'])
+
+                # Generate Graph
+                self.button_0 = ttk.Button(self, style="TButton", text="Generate Graph", command=lambda: generateGraph(self.master.graph.label))
+
+                # Quit GUI
+                self.button_1 = ttk.Button(self, style="Toggle.TButton", text="❌", command=lambda: systemShutdown(root))
+
+                # Layout
+                self.button_0.pack(padx=(0, 4), side='left')
+                self.button_1.pack(padx=(4, 0), side='right')
+                self.button_1.shouldToggle = False
+                self.bindings()
+
+            def bindings(self):
+                root.bind("<KeyPress-r>", lambda event: keyPress(self.button_0, True))
+                root.bind("<KeyRelease-r>", lambda event: keyPress(self.button_0, False))
+                root.bind("<KeyPress-Escape>", lambda event: keyPress(self.button_1, True))
+                root.bind("<KeyRelease-Escape>", lambda event: keyPress(self.button_1, False))
+
+        class Graph(ttk.Labelframe):
+            def __init__(self, parent):
+                super().__init__(parent, text='Graph', padding=data['paddingSize']['labelFrame'])
+
+                self.label = ttk.Label(self)
+                self.label.pack()
+
+        # Set Layout UI Boxes
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=0)
+
+        Menu_Bar(self).pack(fill='x', side='top')
+        self.graph = Graph(self)
+        self.graph.pack(expand=1, fill='both', side='top', pady=(4, 0))
 
 
 class App(ttk.Frame):
@@ -492,7 +539,7 @@ def main():
     root = tk.Tk()
 
     # Configure the root window
-    root.title('Title')
+    root.title('GUI')
     root.geometry('1000x600')
     w = data['windowSize']['width']
     h = data['windowSize']['height']
@@ -503,7 +550,7 @@ def main():
 
     # Open window at the center of the screen and is borderless
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-    root.overrideredirect(0)
+    root.overrideredirect(False)
 
     # Set theme
     sv_ttk.set_theme('dark')

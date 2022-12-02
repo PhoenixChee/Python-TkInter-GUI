@@ -32,5 +32,10 @@
     "family": "Bahnschrift SemiBold",
     "weight": "bold",
     "size": 10
+  },
+  "graph-color": {
+    "axis": "white",
+    "line": "#51B7EB",
+    "font": "#51B7EB"
   }
 }

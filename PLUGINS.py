@@ -59,6 +59,7 @@ def stopODrive():
 
 def systemShutdown(root):
     print("System Shutting Down")
+    root.quit()
     root.destroy()
 
 
@@ -120,6 +121,7 @@ def switchCamera(frame, toggle):
     elif toggle.get() == 0:
         camOn = False
         cam.release()
+        frame.configure(image='')
         print("Show Camera On Display: Disabled")
 
 
@@ -132,3 +134,39 @@ def showFrames(frame):
         frame.imgtk = imgtk
         frame.configure(image=imgtk)
         frame.after(10, lambda: showFrames(frame))
+
+
+def generateGraph(frame):
+    # Clear Image from Label
+    plt.clf()
+
+    # Plotting X & Y Coordinates
+    plottingGraph()
+    print("Plotting Coordinates...")
+
+    # Save Plot as Transparent PNG
+    plt.savefig('graph.png', transparent=True)
+    print("Generating Graph...")
+
+    # Configure Frame To Image
+    photo = ImageTk.PhotoImage(file="graph.png")
+    frame.configure(image=photo)
+
+
+def plottingGraph():
+    # Configure Plot Graph Colours
+    ax = plt.axes()
+    ax.tick_params(colors=data['graph-color']['axis'], which='both')    # Set Color to All Tick Parameters
+    for spine in ax.spines.values():                                    # Set Color to All Spine
+        spine.set_color(data['graph-color']['axis'])
+
+    # Configure Plot Graph Legend
+    plt.title('L to the ratio', color=data['graph-color']['font'])      # Set Color Title
+    plt.xlabel('Time (s)', color=data['graph-color']['font'])           # Set Color X Label
+    plt.ylabel('Temperature (°C)', color=data['graph-color']['font'])   # Set Color Y Label
+
+    # Input Plot Data
+    x = np.arange(1, 31)
+    y = np.random.randint(1, 100, 30)
+    plt.ylim([1, 120])
+    plt.plot(x, y, color=data['graph-color']['line'])
