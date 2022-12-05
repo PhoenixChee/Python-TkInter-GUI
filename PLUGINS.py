@@ -1,3 +1,5 @@
+import time
+
 from GUI import *
 
 def keyPress(widget, pressed):
@@ -136,24 +138,34 @@ def showFrames(frame):
         frame.after(10, lambda: showFrames(frame))
 
 
+def switchMonitorTemp(frame, toggle):
+    global monitorOn
+    if toggle.get() == 1:
+        monitorOn = True
+        generateGraph(frame)
+    elif toggle.get() == 0:
+        monitorOn = False
+
+
 def generateGraph(frame):
-    # Clear Image from Label
+    global monitorOn
+
+    # Clear Plots in Graph
     plt.clf()
 
-    # Plotting X & Y Coordinates
-    plottingGraph()
-    print("Plotting Coordinates...")
+    if monitorOn:
+        # Plot & Save Graph as Transparent PNG
+        plotGraph()
+        plt.savefig('graph.png', transparent=True)
 
-    # Save Plot as Transparent PNG
-    plt.savefig('graph.png', transparent=True)
-    print("Generating Graph...")
-
-    # Configure Frame To Image
-    photo = ImageTk.PhotoImage(file="graph.png")
-    frame.configure(image=photo)
+        # Configure Frame To Image
+        photo = ImageTk.PhotoImage(file="graph.png")
+        frame.configure(image=photo)
+        frame.after(500, lambda: generateGraph(frame))
 
 
-def plottingGraph():
+def plotGraph():
+    global x, y
     # Configure Plot Graph Colours
     ax = plt.axes()
     ax.tick_params(colors=data['graph-color']['axis'], which='both')    # Set Color to All Tick Parameters
@@ -164,9 +176,36 @@ def plottingGraph():
     plt.title('L to the ratio', color=data['graph-color']['font'])      # Set Color Title
     plt.xlabel('Time (s)', color=data['graph-color']['font'])           # Set Color X Label
     plt.ylabel('Temperature (°C)', color=data['graph-color']['font'])   # Set Color Y Label
-
-    # Input Plot Data
-    x = np.arange(1, 31)
-    y = np.random.randint(1, 100, 30)
     plt.ylim([1, 120])
+
+    # Plot Graph
+    x, y = generateCoordinates()
     plt.plot(x, y, color=data['graph-color']['line'])
+
+
+# Initialise Values
+minPoints = 2
+maxPoints = 60
+arrayTemp = np.array([0 for i in range(maxPoints)])
+
+def generateCoordinates():
+    global arrayTemp, minPoints, maxPoints
+
+    # Generate X Data
+    x = np.arange(minPoints - maxPoints, minPoints)
+
+    # Generate Y Data
+    arrayTemp = np.append(arrayTemp, round(np.random.uniform(0.0, 100.0), 2))
+    if len(arrayTemp) > maxPoints:
+        arrayTemp = arrayTemp[1:]
+    y = arrayTemp
+
+    # Update Time Frame
+    minPoints += 1
+
+    return x, y
+
+
+def selectSensor(radio):
+    sensor = radio.get()
+    return sensor
