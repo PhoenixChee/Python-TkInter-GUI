@@ -43,7 +43,7 @@
     "axis": "#f2f2f2"
   },
   "graphSettings": {
-    "refreshRate": 5000,
+    "refreshRate": 2000,
     "pollingRate": 1000,
     "maxPoints": 60,
     "minPoints": 2,

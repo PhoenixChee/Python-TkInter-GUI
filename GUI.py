@@ -108,8 +108,8 @@ class Tab1(ttk.Frame):
                         self.button_2 = ttk.Button(self, text='Calibrate ODrive', style='Toggle.TButton', command=calibrateODrive)
 
                         # Layout
-                        self.button_1.pack(fill='x', pady=(0, 5))
-                        self.button_2.pack(fill='x', pady=(5, 0))
+                        self.button_1.pack(fill='x', pady=(0, 4))
+                        self.button_2.pack(fill='x', pady=(4, 0))
 
                 add_widgets_top(self).pack(fill='x', side='top')
                 add_widgets_bot(self).pack(fill='x', side='bottom')
@@ -151,11 +151,11 @@ class Tab1(ttk.Frame):
                         self.progress_2 = ttk.Progressbar(self, value=0, mode='determinate')
 
                         # Layout Column 1
-                        self.label_1.grid(row=0, column=0, padx=(0, 4), sticky='WE')
-                        self.label_2.grid(row=1, column=0, padx=(0, 4), sticky='WE')
-                        self.label_3.grid(row=2, column=0, padx=(0, 4), sticky='WE')
-                        self.label_4.grid(row=3, column=0, padx=(0, 4), sticky='WE')
-                        self.label_5.grid(row=4, column=0, padx=(0, 4), sticky='WE')
+                        self.label_1.grid(row=0, column=0, padx=(0, 4), sticky='EW')
+                        self.label_2.grid(row=1, column=0, padx=(0, 4), sticky='EW')
+                        self.label_3.grid(row=2, column=0, padx=(0, 4), sticky='EW')
+                        self.label_4.grid(row=3, column=0, padx=(0, 4), sticky='EW')
+                        self.label_5.grid(row=4, column=0, padx=(0, 4), sticky='EW')
 
                         # Layout Column 2
                         self.label_01.grid(row=0, column=1, padx=(4, 4), sticky='E')
@@ -295,8 +295,8 @@ class Tab1(ttk.Frame):
                 self.output_2 = ttk.Label(self, text='°C')
 
                 # Layout
-                self.label_1.grid(row=0, column=0, sticky='WE')
-                self.label_2.grid(row=1, column=0, sticky='WE')
+                self.label_1.grid(row=0, column=0, sticky='EW')
+                self.label_2.grid(row=1, column=0, sticky='EW')
                 self.output_1.grid(row=0, column=1, sticky='E')
                 self.output_2.grid(row=1, column=1, sticky='E')
                 self.progress_2.grid(row=2, column=0, columnspan=2, sticky='NEW')
@@ -327,11 +327,11 @@ class Tab1(ttk.Frame):
                         self.progress_steering = ttk.Progressbar(self, value=50, mode='indeterminate')
 
                         # Layout
-                        self.label_speed.grid(row=0, column=0, sticky='WE')
+                        self.label_speed.grid(row=0, column=0, sticky='EW')
                         self.output_speed.grid(row=0, column=1, sticky='E')
                         self.progress_speed.grid(row=1, column=0, columnspan=2, sticky='NEW')
 
-                        self.label_steering.grid(row=2, column=0, sticky='WE')
+                        self.label_steering.grid(row=2, column=0, sticky='EW')
                         self.output_steering.grid(row=2, column=1, sticky='E')
                         self.progress_steering.grid(row=3, column=0, columnspan=2, sticky='NEW')
 
@@ -478,7 +478,7 @@ class Tab3(ttk.Frame):
 
                 # Generate Graph
                 self.toggle_switch_1 = IntVar()
-                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor Temp', command=lambda: switchMonitorTemp(self.master.graph.label, self.toggle_switch_1))
+                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(self.master.graph.label, self.toggle_switch_1))
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
@@ -497,18 +497,11 @@ class Tab3(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, text='Sensor', padding=data['paddingSize']['labelFrame'])
 
-                self.columnconfigure(0, weight=0, minsize=36)
+                self.columnconfigure(0, weight=0, uniform='1', minsize=36)
+                self.columnconfigure(1, weight=1)
                 for index in range(6):
                     self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
 
-                # self.switchList = []
-                # for x in range(6):
-                #     switch = {'value': IntVar()}
-                #     switch['Button'] = ttk.Checkbutton(self, style='Toggle.TButton', variable=switch['value'], text=x)
-                #     switch['Button'].grid(row=x, column=0, padx=(0, 4), pady=(0, 4), sticky='NSEW')
-                #     self.switchList.append(switch)
-                # print(self.switchList)
-                
                 # Sensor Buttons
                 self.var = IntVar()
                 self.radio_1 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=0, text='1', command=lambda: selectSensor(self.var))
@@ -518,13 +511,6 @@ class Tab3(ttk.Frame):
                 self.radio_5 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=4, text='5', command=lambda: selectSensor(self.var))
                 self.radio_6 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=5, text='6', command=lambda: selectSensor(self.var))
 
-                self.radio_1.grid(row=0, column=0, padx=(4, 0), pady=(0, 4), sticky='NSW')
-                self.radio_2.grid(row=1, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.radio_3.grid(row=2, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.radio_4.grid(row=3, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.radio_5.grid(row=4, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.radio_6.grid(row=5, column=0, padx=(4, 0), pady=(4, 0), sticky='NSW')
-
                 # Sensor Labels
                 self.label_1 = ttk.Label(self, text='Sensor 1')
                 self.label_2 = ttk.Label(self, text='Sensor 2')
@@ -533,14 +519,62 @@ class Tab3(ttk.Frame):
                 self.label_5 = ttk.Label(self, text='Sensor 5')
                 self.label_6 = ttk.Label(self, text='Sensor 6')
 
-                self.label_1.grid(row=0, column=1, padx=(4, 0), pady=(0, 4), sticky='NSW')
-                self.label_2.grid(row=1, column=1, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.label_3.grid(row=2, column=1, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.label_4.grid(row=3, column=1, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.label_5.grid(row=4, column=1, padx=(4, 0), pady=(4, 4), sticky='NSW')
-                self.label_6.grid(row=5, column=1, padx=(4, 0), pady=(4, 0), sticky='NSW')
+                # Layout
+                self.radio_1.grid(row=0, column=0, pady=(0, 4), sticky='EW')
+                self.radio_2.grid(row=1, column=0, pady=(4, 4), sticky='EW')
+                self.radio_3.grid(row=2, column=0, pady=(4, 4), sticky='EW')
+                self.radio_4.grid(row=3, column=0, pady=(4, 4), sticky='EW')
+                self.radio_5.grid(row=4, column=0, pady=(4, 4), sticky='EW')
+                self.radio_6.grid(row=5, column=0, pady=(4, 0), sticky='EW')
+
+                self.label_1.grid(row=0, column=1, padx=(8, 0), pady=(0, 4), sticky='W')
+                self.label_2.grid(row=1, column=1, padx=(8, 0), pady=(4, 4), sticky='W')
+                self.label_3.grid(row=2, column=1, padx=(8, 0), pady=(4, 4), sticky='W')
+                self.label_4.grid(row=3, column=1, padx=(8, 0), pady=(4, 4), sticky='W')
+                self.label_5.grid(row=4, column=1, padx=(8, 0), pady=(4, 4), sticky='W')
+                self.label_6.grid(row=5, column=1, padx=(8, 0), pady=(4, 0), sticky='W')
 
         class Box_2(ttk.Labelframe):
+            def __init__(self, parent):
+                super().__init__(parent, text='Monitor', padding=data['paddingSize']['labelFrame'])
+
+                class add_widgets_top(ttk.Frame):
+                    def __init__(self, parent):
+                        super().__init__(parent, padding=data['paddingSize']['frame'])
+
+                        for index in range(2):
+                            self.columnconfigure(index, weight=1, uniform='1')
+                        for index in range(3):
+                            self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
+
+                        # Temperature
+                        self.label_1 = ttk.Label(self, text='Highest Temp')
+                        self.label_2 = ttk.Label(self, text='Lowest Temp')
+                        self.label_3 = ttk.Label(self, text='Current Temp')
+                        self.output_1 = ttk.Label(self, text='°C')
+                        self.output_2 = ttk.Label(self, text='°C')
+                        self.output_3 = ttk.Label(self, text='°C')
+
+                        # Layout
+                        self.label_1.grid(row=0, column=0, sticky='EW')
+                        self.label_2.grid(row=1, column=0, sticky='EW')
+                        self.label_3.grid(row=2, column=0, sticky='EW')
+                        self.output_1.grid(row=0, column=1, sticky='E')
+                        self.output_2.grid(row=1, column=1, sticky='E')
+                        self.output_3.grid(row=2, column=1, sticky='E')
+
+                class add_widgets_bot(ttk.Frame):
+                    def __init__(self, parent):
+                        super().__init__(parent, padding=data['paddingSize']['frame'])
+
+                        # Reset Temperature Recordings
+                        self.button_1 = ttk.Button(self, style='Toggle.TButton', text='Reset', command=lambda: selectSensor(self.var))
+                        self.button_1.pack(fill='x')
+
+                add_widgets_top(self).pack(fill='x', side='top')
+                add_widgets_bot(self).pack(fill='x', side='bottom')
+
+        class Box_3(ttk.Labelframe):
             def __init__(self, parent):
                 super().__init__(parent, text='Graph', padding=data['paddingSize']['labelFrame'])
 
@@ -550,14 +584,15 @@ class Tab3(ttk.Frame):
         # Set Layout UI Boxes
         self.columnconfigure(0, weight=1, uniform='1')
         self.columnconfigure(1, weight=3, uniform='1')
-        self.rowconfigure(0, weight=0)
-        self.rowconfigure(1, weight=1)
+        for index in range(2):
+            self.rowconfigure(index, weight=0)
+        self.rowconfigure(2, weight=1)
 
         Menu_Bar(self).grid(row=0, columnspan=2, sticky='EW')
-        self.sensor = Box_1(self)
-        self.sensor.grid(row=1, column=0, padx=(0, 4), pady=(4, 0), sticky='NEW')
-        self.graph = Box_2(self)
-        self.graph.grid(row=1, column=1, padx=(4, 0), pady=(4, 0), sticky='NSEW')
+        Box_1(self).grid(row=1, column=0, padx=(0, 4), pady=(4, 4), sticky='NSEW')
+        Box_2(self).grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
+        self.graph = Box_3(self)
+        self.graph.grid(row=1, rowspan=2, column=1, padx=(4, 0), pady=(4, 0), sticky='NSEW')
 
 
 class App(ttk.Frame):

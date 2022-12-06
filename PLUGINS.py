@@ -138,7 +138,7 @@ def showFrames(frame):
         frame.after(data['camSettings']['refreshRate'], lambda: showFrames(frame))
 
 
-def switchMonitorTemp(frame, toggle):
+def switchMonitor(frame, toggle):
     global monitorOn
     if toggle.get() == 1:
         monitorOn = True
@@ -187,7 +187,7 @@ def selectSensor(radio):
 
 
 def generateCoordinates():
-    global arrayTemp, x, y, sensor
+    global arrayTemp, sensor, x, y
 
     # Initialise Values
     sensor = data['graphSettings']['defaultSensor']
