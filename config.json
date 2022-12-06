@@ -33,9 +33,20 @@
     "weight": "bold",
     "size": 10
   },
-  "graph-color": {
-    "axis": "white",
+  "camSettings": {
+    "port": 0,
+    "refreshRate": 10
+  },
+  "graphColor": {
+    "font": "#51B7EB",
     "line": "#51B7EB",
-    "font": "#51B7EB"
+    "axis": "#f2f2f2"
+  },
+  "graphSettings": {
+    "refreshRate": 5000,
+    "pollingRate": 1000,
+    "maxPoints": 60,
+    "minPoints": 2,
+    "defaultSensor": 0
   }
 }

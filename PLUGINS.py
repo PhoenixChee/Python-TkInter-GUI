@@ -114,7 +114,7 @@ def switchControlMode(toggle):
 
 def switchCamera(frame, toggle):
     global camOn, cam
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(data['camSettings']['port'])
 
     if toggle.get() == 1:
         camOn = True
@@ -135,7 +135,7 @@ def showFrames(frame):
         imgtk = ImageTk.PhotoImage(image=img)
         frame.imgtk = imgtk
         frame.configure(image=imgtk)
-        frame.after(10, lambda: showFrames(frame))
+        frame.after(data['camSettings']['refreshRate'], lambda: showFrames(frame))
 
 
 def switchMonitorTemp(frame, toggle):
@@ -149,11 +149,10 @@ def switchMonitorTemp(frame, toggle):
 
 def generateGraph(frame):
     global monitorOn
-
-    # Clear Plots in Graph
-    plt.clf()
-
     if monitorOn:
+        # Clear Plots in Graph
+        plt.clf()
+
         # Plot & Save Graph as Transparent PNG
         plotGraph()
         plt.savefig('graph.png', transparent=True)
@@ -161,51 +160,59 @@ def generateGraph(frame):
         # Configure Frame To Image
         photo = ImageTk.PhotoImage(file="graph.png")
         frame.configure(image=photo)
-        frame.after(500, lambda: generateGraph(frame))
+        frame.after(data['graphSettings']['refreshRate'], lambda: generateGraph(frame))
 
 
 def plotGraph():
     global x, y
     # Configure Plot Graph Colours
     ax = plt.axes()
-    ax.tick_params(colors=data['graph-color']['axis'], which='both')    # Set Color to All Tick Parameters
+    ax.tick_params(colors=data['graphColor']['axis'], which='both')    # Set Color to All Tick Parameters
     for spine in ax.spines.values():                                    # Set Color to All Spine
-        spine.set_color(data['graph-color']['axis'])
+        spine.set_color(data['graphColor']['axis'])
 
     # Configure Plot Graph Legend
-    plt.title('L to the ratio', color=data['graph-color']['font'])      # Set Color Title
-    plt.xlabel('Time (s)', color=data['graph-color']['font'])           # Set Color X Label
-    plt.ylabel('Temperature (°C)', color=data['graph-color']['font'])   # Set Color Y Label
+    plt.title('L to the ratio', color=data['graphColor']['font'])      # Set Color Title
+    plt.xlabel('Time (s)', color=data['graphColor']['font'])           # Set Color X Label
+    plt.ylabel('Temperature (°C)', color=data['graphColor']['font'])   # Set Color Y Label
     plt.ylim([1, 120])
 
     # Plot Graph
-    x, y = generateCoordinates()
-    plt.plot(x, y, color=data['graph-color']['line'])
-
-
-# Initialise Values
-minPoints = 2
-maxPoints = 60
-arrayTemp = np.array([0 for i in range(maxPoints)])
-
-def generateCoordinates():
-    global arrayTemp, minPoints, maxPoints
-
-    # Generate X Data
-    x = np.arange(minPoints - maxPoints, minPoints)
-
-    # Generate Y Data
-    arrayTemp = np.append(arrayTemp, round(np.random.uniform(0.0, 100.0), 2))
-    if len(arrayTemp) > maxPoints:
-        arrayTemp = arrayTemp[1:]
-    y = arrayTemp
-
-    # Update Time Frame
-    minPoints += 1
-
-    return x, y
+    plt.plot(x, y, color=data['graphColor']['line'])
 
 
 def selectSensor(radio):
+    global sensor
     sensor = radio.get()
-    return sensor
+
+
+def generateCoordinates():
+    global arrayTemp, x, y, sensor
+
+    # Initialise Values
+    sensor = data['graphSettings']['defaultSensor']
+    arrayList = {}
+    for i in range(1, 7):
+        arrayList['sensor{}'.format(i)] = np.array([0 for i in range(data['graphSettings']['maxPoints'])])
+
+    while True:
+        # Generate X Data (Time)
+        x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'], data['graphSettings']['minPoints'])
+
+        # Generate Y Data (Temperature)
+        for i in range(1, 7):
+            array = arrayList['sensor{}'.format(i)]
+            array = np.append(array, round(np.random.uniform(0.0, 100.0), 2))
+            arrayList['sensor{}'.format(i)] = array[1:]
+
+        # Assign Y Data Based on Selected Sensor
+        for i in range(1, 7):
+            if sensor == (i - 1):
+                y = arrayList['sensor{}'.format(i)]
+
+        # Update Time Frame
+        data['graphSettings']['minPoints'] += 1
+        time.sleep(data['graphSettings']['pollingRate']/1000)
+
+
+threading.Thread(target=generateCoordinates).start()

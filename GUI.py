@@ -8,6 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 
 # Matplotlib & NumPy for Graph Plotting
+import threading
 import time
 import numpy as np
 import matplotlib
@@ -510,12 +511,12 @@ class Tab3(ttk.Frame):
                 
                 # Sensor Buttons
                 self.var = IntVar()
-                self.radio_1 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=1, text='1', command=lambda: selectSensor(self.var))
-                self.radio_2 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=2, text='2', command=lambda: selectSensor(self.var))
-                self.radio_3 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=3, text='3', command=lambda: selectSensor(self.var))
-                self.radio_4 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=4, text='4', command=lambda: selectSensor(self.var))
-                self.radio_5 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=5, text='5', command=lambda: selectSensor(self.var))
-                self.radio_6 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=6, text='6', command=lambda: selectSensor(self.var))
+                self.radio_1 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=0, text='1', command=lambda: selectSensor(self.var))
+                self.radio_2 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=1, text='2', command=lambda: selectSensor(self.var))
+                self.radio_3 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=2, text='3', command=lambda: selectSensor(self.var))
+                self.radio_4 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=3, text='4', command=lambda: selectSensor(self.var))
+                self.radio_5 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=4, text='5', command=lambda: selectSensor(self.var))
+                self.radio_6 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=5, text='6', command=lambda: selectSensor(self.var))
 
                 self.radio_1.grid(row=0, column=0, padx=(4, 0), pady=(0, 4), sticky='NSW')
                 self.radio_2.grid(row=1, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
@@ -523,7 +524,6 @@ class Tab3(ttk.Frame):
                 self.radio_4.grid(row=3, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
                 self.radio_5.grid(row=4, column=0, padx=(4, 0), pady=(4, 4), sticky='NSW')
                 self.radio_6.grid(row=5, column=0, padx=(4, 0), pady=(4, 0), sticky='NSW')
-
 
                 # Sensor Labels
                 self.label_1 = ttk.Label(self, text='Sensor 1')
