@@ -1,26 +1,22 @@
 # TkInter for Python GUI
 import tkinter as tk
 import sv_ttk
-from tkinter import ttk, font, IntVar
+from tkinter import ttk, font, IntVar, StringVar
 
-# cv2 & Pillow for OpenCV
-import cv2
-from PIL import Image, ImageTk
-
-# Matplotlib & NumPy for Graph Plotting
 import threading
 import time
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 
 # Other Files
 import json
-from PLUGINS import *
+from FUNCTIONS import *
+from Functions.LiveLabels import *
+# from Functions.LiveGraph import *
+# from Functions.LiveCam import *
 
 # Open json and store data in python dict
-with open('./config.json', 'r') as f:
-    data = json.load(f)
+with open('./config.json', 'r') as file:
+    data = json.load(file)
 
 
 class Tab1(ttk.Frame):
@@ -480,6 +476,10 @@ class Tab3(ttk.Frame):
                 self.toggle_switch_1 = IntVar()
                 self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(self.master.graph.label, self.toggle_switch_1))
 
+                # # Generate Graph
+                # self.toggle_switch_2 = IntVar()
+                # self.switch_2 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_2, text='Live Data', command=lambda: switchLiveData(self.master.data.))
+
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
 
@@ -551,9 +551,15 @@ class Tab3(ttk.Frame):
                         self.label_1 = ttk.Label(self, text='Highest Temp')
                         self.label_2 = ttk.Label(self, text='Lowest Temp')
                         self.label_3 = ttk.Label(self, text='Current Temp')
-                        self.output_1 = ttk.Label(self, text='°C')
-                        self.output_2 = ttk.Label(self, text='°C')
-                        self.output_3 = ttk.Label(self, text='°C')
+
+                        self.output_1 = ttk.Label(self, text='-°C')
+                        registerLiveLabel('highestTemp', self.output_1)
+                        self.output_2 = ttk.Label(self, text='-°C')
+                        registerLiveLabel('lowestTemp', self.output_2)
+                        self.output_3 = ttk.Label(self, text='-°C')
+                        registerLiveLabel('currentTemp', self.output_3)
+
+
 
                         # Layout
                         self.label_1.grid(row=0, column=0, sticky='EW')
@@ -584,13 +590,14 @@ class Tab3(ttk.Frame):
         # Set Layout UI Boxes
         self.columnconfigure(0, weight=1, uniform='1')
         self.columnconfigure(1, weight=3, uniform='1')
-        for index in range(2):
-            self.rowconfigure(index, weight=0)
+        self.rowconfigure(0, weight=0)
+        self.rowconfigure(1, weight=0)
         self.rowconfigure(2, weight=1)
 
         Menu_Bar(self).grid(row=0, columnspan=2, sticky='EW')
         Box_1(self).grid(row=1, column=0, padx=(0, 4), pady=(4, 4), sticky='NSEW')
-        Box_2(self).grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
+        self.data = Box_2(self)
+        self.data.grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
         self.graph = Box_3(self)
         self.graph.grid(row=1, rowspan=2, column=1, padx=(4, 0), pady=(4, 0), sticky='NSEW')
 
@@ -599,7 +606,7 @@ class App(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
 
-        # Create Notebook & Frames (Tabs)
+        # Create Notebook & Tabs as Frames
         self.notebook = ttk.Notebook(self, style='TNotebook')
         self.tab_1 = ttk.Frame(self.notebook, padding=data['paddingSize']['appFrame'])
         self.tab_2 = ttk.Frame(self.notebook, padding=data['paddingSize']['appFrame'])
@@ -651,6 +658,7 @@ def main():
     root.option_add('*Font', root.font)
 
     App(root).pack(expand=1, fill='both')
+    updateLiveLabelText(root)
     root.mainloop()
 
 

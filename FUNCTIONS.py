@@ -1,5 +1,3 @@
-import time
-
 from GUI import *
 
 def keyPress(widget, pressed):
@@ -112,6 +110,9 @@ def switchControlMode(toggle):
         print("Mode: Close Loop")
 
 
+import cv2
+
+
 def switchCamera(frame, toggle):
     global camOn, cam
     cam = cv2.VideoCapture(data['camSettings']['port'])
@@ -137,6 +138,11 @@ def showFrames(frame):
         frame.configure(image=imgtk)
         frame.after(data['camSettings']['refreshRate'], lambda: showFrames(frame))
 
+
+from PIL import Image, ImageTk
+
+import matplotlib
+import matplotlib.pyplot as plt
 
 def switchMonitor(frame, toggle):
     global monitorOn
@@ -192,23 +198,24 @@ def generateCoordinates():
     # Initialise Values
     sensor = data['graphSettings']['defaultSensor']
     arrayList = {}
-    for i in range(1, 7):
-        arrayList['sensor{}'.format(i)] = np.array([0 for i in range(data['graphSettings']['maxPoints'])])
+    for sensorNum in range(1, 7):
+        arrayList['sensor{}'.format(sensorNum)] = np.array([0 for i in range(data['graphSettings']['maxPoints'])])
 
     while True:
         # Generate X Data (Time)
         x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'], data['graphSettings']['minPoints'])
 
         # Generate Y Data (Temperature)
-        for i in range(1, 7):
-            array = arrayList['sensor{}'.format(i)]
+        for sensorNum in range(1, 7):
+            array = arrayList['sensor{}'.format(sensorNum)]
             array = np.append(array, round(np.random.uniform(0.0, 100.0), 2))
-            arrayList['sensor{}'.format(i)] = array[1:]
+            arrayList['sensor{}'.format(sensorNum)] = array[1:]
 
         # Assign Y Data Based on Selected Sensor
-        for i in range(1, 7):
-            if sensor == (i - 1):
-                y = arrayList['sensor{}'.format(i)]
+        for sensorNum in range(1, 7):
+            if sensor == (sensorNum - 1):
+                y = arrayList['sensor{}'.format(sensorNum)]
+                break
 
         # Update Time Frame
         data['graphSettings']['minPoints'] += 1
