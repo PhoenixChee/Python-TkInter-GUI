@@ -110,9 +110,6 @@ def switchControlMode(toggle):
         print("Mode: Close Loop")
 
 
-import cv2
-
-
 def switchCamera(frame, toggle):
     global camOn, cam
     cam = cv2.VideoCapture(data['camSettings']['port'])
@@ -139,11 +136,6 @@ def showFrames(frame):
         frame.after(data['camSettings']['refreshRate'], lambda: showFrames(frame))
 
 
-from PIL import Image, ImageTk
-
-import matplotlib
-import matplotlib.pyplot as plt
-
 def switchMonitor(frame, toggle):
     global monitorOn
     if toggle.get() == 1:
@@ -164,7 +156,7 @@ def generateGraph(frame):
         plt.savefig('graph.png', transparent=True)
 
         # Configure Frame To Image
-        photo = ImageTk.PhotoImage(file="graph.png")
+        photo = ImageTk.PhotoImage(file="./graph.png")
         frame.configure(image=photo)
         frame.after(data['graphSettings']['refreshRate'], lambda: generateGraph(frame))
 
@@ -223,3 +215,34 @@ def generateCoordinates():
 
 
 threading.Thread(target=generateCoordinates).start()
+
+
+liveLabels = {}     # DataName List Registered
+datas = {}          # Data List Received
+
+
+def registerLiveLabel(dataName, label):
+    liveLabels.update({dataName: label})
+
+
+def updateLiveLabelText(frame):
+    generateFakeData()
+
+    for keyName in datas:
+        if keyName in liveLabels:
+            label = liveLabels.get(keyName)
+            value = datas.get(keyName)
+            label.config(text=value + '°C')
+
+    frame.after(data['labelSettings']['refreshRate'], lambda: updateLiveLabelText(frame))
+
+
+def generateFakeData():
+    datas.update({"highestTemp": randFloatStr(0, 100.0)})
+    datas.update({"lowestTemp":  randFloatStr(0, 100.0)})
+    datas.update({"currentTemp": randFloatStr(0, 100.0)})
+
+
+def randFloatStr(min, max):
+    return str(round(np.random.uniform(min, max), 2))
+

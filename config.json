@@ -48,5 +48,8 @@
     "maxPoints": 60,
     "minPoints": 2,
     "defaultSensor": 0
+  },
+  "labelSettings": {
+    "refreshRate": 2000
   }
 }

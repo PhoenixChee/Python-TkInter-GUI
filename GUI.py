@@ -3,16 +3,20 @@ import tkinter as tk
 import sv_ttk
 from tkinter import ttk, font, IntVar, StringVar
 
-import threading
-import time
+# OpenCV
+import cv2
+from PIL import Image, ImageTk
+
+# Matplotlib
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 # Other Files
 import json
+import time
+import threading
 from FUNCTIONS import *
-from Functions.LiveLabels import *
-# from Functions.LiveGraph import *
-# from Functions.LiveCam import *
 
 # Open json and store data in python dict
 with open('./config.json', 'r') as file:
