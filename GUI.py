@@ -1,26 +1,21 @@
+# Read JSON file and Store Data
+import json
+with open('./config.json', 'r') as file:
+    data = json.load(file)
+    print(data)
+
 # TkInter for Python GUI
 import tkinter as tk
-import sv_ttk
+import sv_ttk as sv
 from tkinter import ttk, font, IntVar, StringVar
 
-# OpenCV
-import cv2
-from PIL import Image, ImageTk
-
-# Matplotlib
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-
 # Other Files
-import json
 import time
 import threading
 from FUNCTIONS import *
-
-# Open json and store data in python dict
-with open('./config.json', 'r') as file:
-    data = json.load(file)
+from Functions.LiveCam import *
+from Functions.LiveGraph import *
+from Functions.LiveLabels import *
 
 
 class Tab1(ttk.Frame):
@@ -600,8 +595,7 @@ class Tab3(ttk.Frame):
 
         Menu_Bar(self).grid(row=0, columnspan=2, sticky='EW')
         Box_1(self).grid(row=1, column=0, padx=(0, 4), pady=(4, 4), sticky='NSEW')
-        self.data = Box_2(self)
-        self.data.grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
+        Box_2(self).grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
         self.graph = Box_3(self)
         self.graph.grid(row=1, rowspan=2, column=1, padx=(4, 0), pady=(4, 0), sticky='NSEW')
 
@@ -650,7 +644,7 @@ def main():
     root.overrideredirect(False)
 
     # Set theme
-    sv_ttk.set_theme('dark')
+    sv.set_theme('dark')
 
     # Set Widget Styles
     style = ttk.Style(root)
