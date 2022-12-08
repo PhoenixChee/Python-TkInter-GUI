@@ -2,7 +2,6 @@
 import json
 with open('./config.json', 'r') as file:
     data = json.load(file)
-    print(data)
 
 # TkInter for Python GUI
 import tkinter as tk
@@ -12,6 +11,11 @@ from tkinter import ttk, font, IntVar, StringVar
 # Other Files
 import time
 import threading
+from queue import Queue
+
+startTime = time.time()
+
+# Import Other Python Files
 from FUNCTIONS import *
 from Functions.LiveCam import *
 from Functions.LiveGraph import *
@@ -471,19 +475,20 @@ class Tab3(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                # Generate Graph
+                # Monitor Temperature Data
                 self.toggle_switch_1 = IntVar()
-                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(self.master.graph.label, self.toggle_switch_1))
+                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(self.toggle_switch_1))
 
-                # # Generate Graph
-                # self.toggle_switch_2 = IntVar()
-                # self.switch_2 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_2, text='Live Data', command=lambda: switchLiveData(self.master.data.))
+                # # Generate Temperature Graph
+                self.toggle_switch_2 = IntVar()
+                self.switch_2 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_2, text='Graph', command=lambda: switchGraph(self.master.graph.label, self.toggle_switch_2))
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
 
                 # Layout
                 self.switch_1.pack(padx=(0, 4), side='left')
+                self.switch_2.pack(padx=(4, 4), side='left')
                 self.button_1.pack(padx=(4, 0), side='right')
                 self.button_1.shouldToggle = False
                 self.bindings()
@@ -543,37 +548,36 @@ class Tab3(ttk.Frame):
 
                         for index in range(2):
                             self.columnconfigure(index, weight=1, uniform='1')
-                        for index in range(3):
+                        for index in range(4):
                             self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
 
                         # Temperature
-                        self.label_1 = ttk.Label(self, text='Highest Temp')
-                        self.label_2 = ttk.Label(self, text='Lowest Temp')
-                        self.label_3 = ttk.Label(self, text='Current Temp')
+                        self.label_1 = ttk.Label(self, text='Current Temp')
+                        self.label_2 = ttk.Label(self, text='Highest Temp')
+                        self.label_3 = ttk.Label(self, text='Lowest Temp')
 
-                        self.output_1 = ttk.Label(self, text='-°C')
-                        registerLiveLabel('highestTemp', self.output_1)
-                        self.output_2 = ttk.Label(self, text='-°C')
-                        registerLiveLabel('lowestTemp', self.output_2)
-                        self.output_3 = ttk.Label(self, text='-°C')
-                        registerLiveLabel('currentTemp', self.output_3)
-
-
+                        # LiveLabels
+                        self.output_1 = ttk.Label(self, text='-   °C')
+                        registerLiveLabel('currentTemp', self.output_1)
+                        self.output_2 = ttk.Label(self, text='-   °C')
+                        registerLiveLabel('highestTemp', self.output_2)
+                        self.output_3 = ttk.Label(self, text='-   °C')
+                        registerLiveLabel('lowestTemp', self.output_3)
 
                         # Layout
                         self.label_1.grid(row=0, column=0, sticky='EW')
-                        self.label_2.grid(row=1, column=0, sticky='EW')
-                        self.label_3.grid(row=2, column=0, sticky='EW')
+                        self.label_2.grid(row=2, column=0, sticky='EW')
+                        self.label_3.grid(row=3, column=0, sticky='EW')
                         self.output_1.grid(row=0, column=1, sticky='E')
-                        self.output_2.grid(row=1, column=1, sticky='E')
-                        self.output_3.grid(row=2, column=1, sticky='E')
+                        self.output_2.grid(row=2, column=1, sticky='E')
+                        self.output_3.grid(row=3, column=1, sticky='E')
 
                 class add_widgets_bot(ttk.Frame):
                     def __init__(self, parent):
                         super().__init__(parent, padding=data['paddingSize']['frame'])
 
                         # Reset Temperature Recordings
-                        self.button_1 = ttk.Button(self, style='Toggle.TButton', text='Reset', command=lambda: selectSensor(self.var))
+                        self.button_1 = ttk.Button(self, style='Toggle.TButton', text='Reset', command=lambda: clearTemp())
                         self.button_1.pack(fill='x')
 
                 add_widgets_top(self).pack(fill='x', side='top')
@@ -656,9 +660,16 @@ def main():
     root.option_add('*Font', root.font)
 
     App(root).pack(expand=1, fill='both')
-    updateLiveLabelText(root)
+
+    # Initialise Functions
+    threading.Thread(target=generateFakeCoordinates).start()
+    updateLiveLabel(root)
+
+    # Loop Main
     root.mainloop()
 
 
 if __name__ == '__main__':
     main()
+
+print(f'GUI.py Loaded in {str(time.time() - startTime)}s')

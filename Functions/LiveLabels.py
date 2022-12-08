@@ -1,35 +1,75 @@
 from GUI import *
 
-import numpy as np
+liveLabelsList = {}     # Each Registered Label and LabelName List
+dataList = {}           # Each Received Data List
 
+tempList = {}           # Each Sensor Highest & Lowest Temperature List
+for n in range(0, 6):
+    tempList[f'sensor{n}'] = (0, 999)
 
-liveLabels = {}     # DataName List Registered
-datas = {}          # Data List Received
+clear = False
 
 
 def registerLiveLabel(dataName, label):
-    liveLabels.update({dataName: label})
+    liveLabelsList.update({dataName: label})
 
 
-def updateLiveLabelText(frame):
-    generateFakeData()
+def updateLiveLabel(frame):
+    getTempData()
+    updateData()
 
-    for keyName in datas:
-        if keyName in liveLabels:
-            label = liveLabels.get(keyName)
-            value = datas.get(keyName)
-            label.config(text=value + '°C')
+    # Get Data and Matching Labels for Update
+    for keyName in dataList:
+        if keyName in liveLabelsList:
+            label = liveLabelsList.get(keyName)
+            value = str(dataList.get(keyName))
+            label.config(text=value + ' °C')
 
-    frame.after(data['labelSettings']['refreshRate'], lambda: updateLiveLabelText(frame))
-
-
-def generateFakeData():
-    datas.update({"highestTemp": randFloatStr(0, 100.0)})
-    datas.update({"lowestTemp":  randFloatStr(0, 100.0)})
-    datas.update({"currentTemp": randFloatStr(0, 100.0)})
+    frame.after(data['labelSettings']['refreshRate'], lambda: updateLiveLabel(frame))
 
 
-def randFloatStr(min, max):
-    return str(round(np.random.uniform(min, max), 2))
+def clearTemp():
+    global clear
+    clear = True
 
-print('LiveLabels.py loaded')
+
+def getTempData():
+    global highestTemp, lowestTemp, currentTemp, currentTempList, currentSensor, clear
+
+    # Get Current Temperature & Sensor
+    while not queue.empty():
+        currentTempList, currentSensor = queue.get()
+
+    # Check if Clear Button is Pressed
+    if clear:
+        currentTemp = currentTempList[f'sensor{currentSensor}']
+        tempList[f'sensor{currentSensor}'] = currentTemp, currentTemp
+        clear = False
+    else:
+        for n in range(0, 6):
+            # Get All Temperature
+            currentTemp = currentTempList[f'sensor{n}']
+            highestTemp, lowestTemp = tempList[f'sensor{n}']
+
+            # Compare Highest & Lowest Temperature with Current Temperature
+            if currentTemp > highestTemp:
+                highestTemp = currentTemp
+            if currentTemp < lowestTemp:
+                lowestTemp = currentTemp
+
+            # Record Highest & Lowest Temperature for Each Sensor
+            tempList[f'sensor{n}'] = highestTemp, lowestTemp
+
+    # Highest & Lowest Temperature for Selected Sensor
+    currentTemp = currentTempList[f'sensor{currentSensor}']
+    highestTemp, lowestTemp = tempList[f'sensor{currentSensor}']
+
+
+def updateData():
+    # Update All Temperature Data
+    dataList.update({"highestTemp": highestTemp})
+    dataList.update({"lowestTemp": lowestTemp})
+    dataList.update({"currentTemp": currentTemp})
+
+
+print('Imported LiveLabels.py')

@@ -30,4 +30,4 @@ def showFrames(frame):
         frame.after(data['camSettings']['refreshRate'], lambda: showFrames(frame))
 
 
-print('LiveCam.py loaded')
+print('Imported LiveCam.py')

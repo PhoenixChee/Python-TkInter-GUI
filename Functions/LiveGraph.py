@@ -5,19 +5,36 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+queue = Queue()
 
-def switchMonitor(frame, toggle):
+
+def switchGraph(frame, toggle):
+    global graphOn
+    if toggle.get() == 1:
+        graphOn = True
+        generateGraph(frame)
+    elif toggle.get() == 0:
+        graphOn = False
+
+
+def switchMonitor(toggle):
     global monitorOn
     if toggle.get() == 1:
         monitorOn = True
-        generateGraph(frame)
+        print('Monitoring Temperature Values: Enabled')
     elif toggle.get() == 0:
         monitorOn = False
+        print('Monitoring Temperature Values : Disabled')
+
+
+def selectSensor(radio):
+    global sensor
+    sensor = radio.get()
 
 
 def generateGraph(frame):
-    global monitorOn
-    if monitorOn:
+    global graphOn
+    if graphOn:
         # Clear Plots in Graph
         plt.clf()
 
@@ -32,11 +49,10 @@ def generateGraph(frame):
 
 
 def plotGraph():
-    global x, y
     # Configure Plot Graph Colours
     ax = plt.axes()
     ax.tick_params(colors=data['graphColor']['axis'], which='both')    # Set Color to All Tick Parameters
-    for spine in ax.spines.values():                                    # Set Color to All Spine
+    for spine in ax.spines.values():                                   # Set Color to All Spine
         spine.set_color(data['graphColor']['axis'])
 
     # Configure Plot Graph Legend
@@ -49,41 +65,45 @@ def plotGraph():
     plt.plot(x, y, color=data['graphColor']['line'])
 
 
-def selectSensor(radio):
-    global sensor
-    sensor = radio.get()
+# Always Generates Data, Must Loop when Program Starts
+def generateFakeCoordinates():
+    global x, y, sensor
 
+    # Default Sensor Selected
+    sensor = 0
 
-def generateCoordinates():
-    global arrayTemp, sensor, x, y
-
-    # Initialise Values
-    sensor = data['graphSettings']['defaultSensor']
+    # Set List of Temperature Arrays of Each Sensor to 0
     arrayList = {}
-    for sensorNum in range(1, 7):
-        arrayList['sensor{}'.format(sensorNum)] = np.array([0 for i in range(data['graphSettings']['maxPoints'])])
+    currentTempList = {}
+    for n in range(0, 6):
+        arrayList[f'sensor{n}'] = np.array([0 for i in range(data['graphSettings']['maxPoints'])])
 
     while True:
         # Generate X Data (Time)
         x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'], data['graphSettings']['minPoints'])
 
         # Generate Y Data (Temperature)
-        for sensorNum in range(1, 7):
-            array = arrayList['sensor{}'.format(sensorNum)]
+        for n in range(0, 6):
+            array = arrayList[f'sensor{n}']
             array = np.append(array, round(np.random.uniform(0.0, 100.0), 2))
-            arrayList['sensor{}'.format(sensorNum)] = array[1:]
+            arrayList[f'sensor{n}'] = array[1:]
 
         # Assign Y Data Based on Selected Sensor
-        for sensorNum in range(1, 7):
-            if sensor == (sensorNum - 1):
-                y = arrayList['sensor{}'.format(sensorNum)]
+        for n in range(0, 6):
+            if sensor == (n):
+                y = arrayList[f'sensor{n}']
                 break
+
+        # Get List of Each Sensor Current Temperature
+        for n in range(0, 6):
+            currentTempList[f'sensor{n}'] = arrayList[f'sensor{n}'][-1]
+
+        # Queue Current Temperature List for LiveLabels
+        queue.put((currentTempList, sensor))
 
         # Update Time Frame
         data['graphSettings']['minPoints'] += 1
         time.sleep(data['graphSettings']['pollingRate']/1000)
 
 
-threading.Thread(target=generateCoordinates).start()
-
-print('LiveGraph.py loaded')
+print('Imported LiveGraph.py')
