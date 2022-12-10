@@ -50,5 +50,8 @@
   },
   "labelSettings": {
     "refreshRate": 1000
+  },
+  "dataSettings": {
+    "pollingRate": 1000
   }
 }

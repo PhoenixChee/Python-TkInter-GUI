@@ -6,7 +6,7 @@ with open('./config.json', 'r') as file:
 # TkInter for Python GUI
 import tkinter as tk
 import sv_ttk as sv
-from tkinter import ttk, font, IntVar, StringVar
+from tkinter import ttk, font, IntVar
 
 # Other Files
 import time
@@ -477,9 +477,9 @@ class Tab3(ttk.Frame):
 
                 # Monitor Temperature Data
                 self.toggle_switch_1 = IntVar()
-                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(self.toggle_switch_1))
+                self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(root, self.toggle_switch_1))
 
-                # # Generate Temperature Graph
+                # Generate Temperature Graph
                 self.toggle_switch_2 = IntVar()
                 self.switch_2 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_2, text='Graph', command=lambda: switchGraph(self.master.graph.label, self.toggle_switch_2))
 
@@ -662,7 +662,6 @@ def main():
     App(root).pack(expand=1, fill='both')
 
     # Initialise Functions
-    threading.Thread(target=generateFakeCoordinates).start()
     updateLiveLabel(root)
 
     # Loop Main
