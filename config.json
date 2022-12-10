@@ -3,16 +3,6 @@
     "width": 1024,
     "height": 600
   },
-  "camAspectRatio": {
-    "width": {
-      "brio": 16,
-      "webcam": 4
-    },
-    "height": {
-      "brio": 9,
-      "webcam": 3
-    }
-  },
   "columnSize": {
     "col1": 220,
     "col2": 440
@@ -28,25 +18,29 @@
     "appFrame": 8,
     "frame": 0
   },
-  "font": {
+  "fontSettings": {
     "family": "Bahnschrift SemiBold",
     "weight": "bold",
     "size": 10
   },
   "camSettings": {
     "port": 0,
-    "refreshRate": 10
+    "resolutionWidth": 1080,
+    "resolutionHeight": 720,
+    "targetFPS": 30
   },
-  "graphColor": {
-    "font": "#51B7EB",
-    "line": "#51B7EB",
-    "axis": "#f2f2f2"
+  "imageSettings": {
+    "width": 705,
+    "height": 405,
+    "targetFPS": 30
   },
   "graphSettings": {
     "refreshRate": 2000,
-    "pollingRate": 1000,
     "maxPoints": 60,
-    "minPoints": 2
+    "minPoints": 2,
+    "fontColor": "#51B7EB",
+    "lineColor": "#51B7EB",
+    "axisColor": "#f2f2f2"
   },
   "labelSettings": {
     "refreshRate": 1000

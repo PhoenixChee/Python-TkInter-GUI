@@ -1,21 +1,22 @@
+# TkInter Python GUI
+import tkinter as tk
+import sv_ttk as sv
+from tkinter import ttk, font, IntVar
+
+# Multithreading
+import threading
+from queue import Queue
+
+# Time
+import time
+startTime = time.time()
+
 # Read JSON file and Store Data
 import json
 with open('./config.json', 'r') as file:
     data = json.load(file)
 
-# TkInter for Python GUI
-import tkinter as tk
-import sv_ttk as sv
-from tkinter import ttk, font, IntVar
-
-# Other Files
-import time
-import threading
-from queue import Queue
-
-startTime = time.time()
-
-# Import Other Python Files
+# Import Python Files
 from FUNCTIONS import *
 from Functions.LiveCam import *
 from Functions.LiveGraph import *
@@ -33,6 +34,7 @@ class Tab1(ttk.Frame):
                 # Power Switch
                 self.toggle_switch_1 = IntVar()
                 self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Power', command=lambda: switchPower(root, self.toggle_switch_1))
+                self.switch_1.shouldToggle = False
 
                 # Control Switch
                 self.toggle_switch_2 = IntVar()
@@ -40,13 +42,13 @@ class Tab1(ttk.Frame):
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
+                self.button_1.shouldToggle = False
 
                 # Layout
                 self.switch_1.pack(padx=(0, 4), side='left')
                 self.switch_2.pack(padx=(4, 4), side='left')
                 self.button_1.pack(padx=(4, 0), side='right')
-                self.switch_1.shouldToggle = False
-                self.button_1.shouldToggle = False
+
                 self.bindings()
 
             def bindings(self):
@@ -329,7 +331,6 @@ class Tab1(ttk.Frame):
                         self.label_speed.grid(row=0, column=0, sticky='EW')
                         self.output_speed.grid(row=0, column=1, sticky='E')
                         self.progress_speed.grid(row=1, column=0, columnspan=2, sticky='NEW')
-
                         self.label_steering.grid(row=2, column=0, sticky='EW')
                         self.output_steering.grid(row=2, column=1, sticky='E')
                         self.progress_steering.grid(row=3, column=0, columnspan=2, sticky='NEW')
@@ -374,6 +375,7 @@ class Tab1(ttk.Frame):
                         self.label_key_a.grid(row=2, column=0, sticky='NSEW')
                         self.label_key_s.grid(row=2, column=2, sticky='NSEW')
                         self.label_key_d.grid(row=2, column=4, sticky='NSEW')
+
                         self.bindings()
 
                     def bindings(self):
@@ -390,7 +392,7 @@ class Tab1(ttk.Frame):
                     def __init__(self, parent):
                         super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                        self.columnconfigure(0, minsize=108)
+                        self.columnconfigure(0, weight=1, uniform='1', minsize=36*2)
                         for index in range(0, 3, 2):
                             self.rowconfigure(index, weight=1, uniform='1', minsize=36)
                         self.rowconfigure(1, minsize=6)
@@ -400,6 +402,7 @@ class Tab1(ttk.Frame):
 
                         # Layout
                         self.label_key_x.grid(row=2, sticky='NSEW')
+
                         self.bindings()
 
                     def bindings(self):
@@ -433,38 +436,111 @@ class Tab2(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                # # Camera Switch
+                # Toggle Camera Button
                 self.toggle_switch_1 = IntVar()
                 self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Display Cam', command=lambda: switchCamera(self.master.opencv.label, self.toggle_switch_1))
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
+                self.button_1.shouldToggle = False
 
                 # Layout
                 self.switch_1.pack(padx=(0, 4), side='left')
                 self.button_1.pack(padx=(4, 0), side='right')
-                self.button_1.shouldToggle = False
+
                 self.bindings()
 
             def bindings(self):
                 root.bind('<KeyPress-Escape>', lambda event: keyPress(self.button_1, True))
                 root.bind('<KeyRelease-Escape>', lambda event: keyPress(self.button_1, False))
 
-        class OpenCV(ttk.Labelframe):
+        class Box_1(ttk.Labelframe):
             def __init__(self, parent):
-                super().__init__(parent, text='CAM', padding=data['paddingSize']['labelFrame'])
+                super().__init__(parent, text='Settings', padding=data['paddingSize']['labelFrame'])
+
+                for index in range(2):
+                    self.columnconfigure(index, weight=1, uniform='1')
+                for index in range(5):
+                    self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
+
+                self.add_widgets()
+
+            def add_widgets(self):
+
+                # Settings Labels
+                self.label_1 = ttk.Label(self, text='Camera Resolution')
+                self.label_2 = ttk.Label(self, text='Target FPS')
+                self.label_3 = ttk.Label(self, text='Image Resolution')
+                self.label_4 = ttk.Label(self, text='Image FPS')
+
+                # LiveLabels
+                self.output_1 = ttk.Label(self)
+                registerLiveLabel('camResolution', self.output_1)
+                self.output_2 = ttk.Label(self)
+                registerLiveLabel('camFPS', self.output_2)
+                self.output_3 = ttk.Label(self)
+                registerLiveLabel('imageResolution', self.output_3)
+                self.output_4 = ttk.Label(self)
+                registerLiveLabel('imageFPS', self.output_4)
+
+                # Layout
+                self.label_1.grid(row=0, column=0, sticky='EW')
+                self.label_2.grid(row=1, column=0, sticky='EW')
+                self.label_3.grid(row=3, column=0, sticky='EW')
+                self.label_4.grid(row=4, column=0, sticky='EW')
+                self.output_1.grid(row=0, column=1, sticky='E')
+                self.output_2.grid(row=1, column=1, sticky='E')
+                self.output_3.grid(row=3, column=1, sticky='E')
+                self.output_4.grid(row=4, column=1, sticky='E')
+
+        class Box_2(ttk.Labelframe):
+            def __init__(self, parent):
+                super().__init__(parent, text='Frame Settings', padding=data['paddingSize']['labelFrame'])
+
+                for index in range(2):
+                    self.columnconfigure(index, weight=1, uniform='1')
+                for index in range(2):
+                    self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
+
+                self.add_widgets()
+
+            def add_widgets(self):
+
+                # Camera Settings Labels
+                self.label_1 = ttk.Label(self, text='Resolution')
+                self.label_2 = ttk.Label(self, text='FPS')
+
+                # LiveLabels
+                self.output_1 = ttk.Label(self)
+                registerLiveLabel('frameResolution', self.output_1)
+                self.output_2 = ttk.Label(self)
+                registerLiveLabel('frameFPS', self.output_2)
+
+                # Layout
+                self.label_1.grid(row=0, column=0, sticky='EW')
+                self.label_2.grid(row=1, column=0, sticky='EW')
+                self.output_1.grid(row=0, column=1, sticky='E')
+                self.output_2.grid(row=1, column=1, sticky='E')
+
+        class Box_3(ttk.Labelframe):
+            def __init__(self, parent):
+                super().__init__(parent, text='Camera', padding=data['paddingSize']['labelFrame'])
 
                 self.label = ttk.Label(self)
-                self.label.pack()
+                self.label.pack(expand=1)
 
         # Set Layout UI Boxes
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1, uniform='1')
+        self.columnconfigure(1, weight=3, uniform='1')
+        self.rowconfigure(0, weight=0)
         self.rowconfigure(1, weight=0)
+        self.rowconfigure(2, weight=1)
 
-        Menu_Bar(self).pack(fill='x', side='top')
-        self.opencv = OpenCV(self)
-        self.opencv.pack(expand=1, fill='both', side='top', pady=(4, 0))
+        Menu_Bar(self).grid(row=0, columnspan=2, sticky='EW')
+        Box_1(self).grid(row=1, column=0, padx=(0, 4), pady=(4, 4), sticky='NSEW')
+        # Box_2(self).grid(row=2, column=0, padx=(0, 4), pady=(4, 0), sticky='NSEW')
+        self.opencv = Box_3(self)
+        self.opencv.grid(row=1, rowspan=2, column=1, padx=(4, 0), pady=(4, 0), sticky='NSEW')
 
 
 class Tab3(ttk.Frame):
@@ -475,22 +551,23 @@ class Tab3(ttk.Frame):
             def __init__(self, parent):
                 super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                # Monitor Temperature Data
+                # Toggle Monitor Temperature Button
                 self.toggle_switch_1 = IntVar()
                 self.switch_1 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_1, text='Monitor', command=lambda: switchMonitor(root, self.toggle_switch_1))
 
-                # Generate Temperature Graph
+                # Toggle Temperature Graph Button
                 self.toggle_switch_2 = IntVar()
                 self.switch_2 = ttk.Checkbutton(self, style='Switch.TCheckbutton', variable=self.toggle_switch_2, text='Graph', command=lambda: switchGraph(self.master.graph.label, self.toggle_switch_2))
 
                 # Quit GUI
                 self.button_1 = ttk.Button(self, style='Toggle.TButton', text='❌', command=lambda: systemShutdown(root))
+                self.button_1.shouldToggle = False
 
                 # Layout
                 self.switch_1.pack(padx=(0, 4), side='left')
                 self.switch_2.pack(padx=(4, 4), side='left')
                 self.button_1.pack(padx=(4, 0), side='right')
-                self.button_1.shouldToggle = False
+
                 self.bindings()
 
             def bindings(self):
@@ -506,6 +583,9 @@ class Tab3(ttk.Frame):
                 for index in range(6):
                     self.rowconfigure(index, weight=1, minsize=data['rowSize']['label'])
 
+                self.add_widgets()
+
+            def add_widgets(self):
                 # Sensor Buttons
                 self.var = IntVar()
                 self.radio_1 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=0, text='1', command=lambda: selectSensor(self.var))
@@ -557,11 +637,11 @@ class Tab3(ttk.Frame):
                         self.label_3 = ttk.Label(self, text='Lowest Temp')
 
                         # LiveLabels
-                        self.output_1 = ttk.Label(self, text='-   °C')
+                        self.output_1 = ttk.Label(self)
                         registerLiveLabel('currentTemp', self.output_1)
-                        self.output_2 = ttk.Label(self, text='-   °C')
+                        self.output_2 = ttk.Label(self)
                         registerLiveLabel('highestTemp', self.output_2)
-                        self.output_3 = ttk.Label(self, text='-   °C')
+                        self.output_3 = ttk.Label(self)
                         registerLiveLabel('lowestTemp', self.output_3)
 
                         # Layout
@@ -576,8 +656,8 @@ class Tab3(ttk.Frame):
                     def __init__(self, parent):
                         super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                        # Reset Temperature Recordings
-                        self.button_1 = ttk.Button(self, style='Toggle.TButton', text='Reset', command=lambda: clearTemp())
+                        # Clear Temperature Button
+                        self.button_1 = ttk.Button(self, style='Toggle.TButton', text='Clear', command=lambda: clearTemp())
                         self.button_1.pack(fill='x')
 
                 add_widgets_top(self).pack(fill='x', side='top')
@@ -588,7 +668,7 @@ class Tab3(ttk.Frame):
                 super().__init__(parent, text='Graph', padding=data['paddingSize']['labelFrame'])
 
                 self.label = ttk.Label(self)
-                self.label.pack()
+                self.label.pack(expand=1)
 
         # Set Layout UI Boxes
         self.columnconfigure(0, weight=1, uniform='1')
@@ -620,12 +700,12 @@ class App(ttk.Frame):
         self.notebook.add(self.tab_3, text='Graph')
         self.notebook.pack(expand=1, fill='both')
 
-        # Displaying
+        # Layout for Each Tab Frame
         Tab1(self.tab_1).pack(expand=1, fill='both')
         Tab2(self.tab_2).pack(expand=1, fill='both')
         Tab3(self.tab_3).pack(expand=1, fill='both')
 
-        # Initialise All Buttons to be Disabled (Except Power & Close Button)
+        # Initialise All Buttons to be Disabled Except Power & Close Button (shouldToggle = False)
         toggleAllChildren(self, False)
 
 
@@ -635,36 +715,34 @@ def main():
 
     # Configure the root window
     root.title('GUI')
-    root.geometry('1000x600')
-    w = data['windowSize']['width']
-    h = data['windowSize']['height']
+    w = data['windowSize']['width']     # 1024px
+    h = data['windowSize']['height']    # 600px
 
     # Calculate Starting X and Y coordinates for Window
-    x = (root.winfo_screenwidth() / 2) - (w / 2)
-    y = (root.winfo_screenheight() / 2) - (h / 2)
+    x = (root.winfo_screenwidth()/2) - (w/2)
+    y = (root.winfo_screenheight()/2) - (h/2)
 
     # Open window at the center of the screen and is borderless
-    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    root.geometry('%dx%d+%d+%d'%(w, h, x, y))
     root.overrideredirect(False)
+    root.resizable(width=False, height=False)
 
     # Set theme
     sv.set_theme('dark')
 
     # Set Widget Styles
     style = ttk.Style(root)
-    style.configure('.', font=(data['font']['family'], data['font']['size']))
-    style.configure('T.Label', font=(data['font']['family'], data['font']['size']))
+    style.configure('.', font=(data['fontSettings']['family'], data['fontSettings']['size']))
+    style.configure('T.Label', font=(data['fontSettings']['family'], data['fontSettings']['size']))
 
     # Set Global Fonts
-    root.font = font.Font(family=data['font']['family'], size=data['font']['size'])
+    root.font = font.Font(family=data['fontSettings']['family'], size=data['fontSettings']['size'])
     root.option_add('*Font', root.font)
 
     App(root).pack(expand=1, fill='both')
 
-    # Initialise Functions
+    # Initialise Registered Labels
     updateLiveLabel(root)
-
-    # Loop Main
     root.mainloop()
 
 

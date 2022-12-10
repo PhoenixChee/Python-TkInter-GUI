@@ -6,6 +6,11 @@ from PIL import ImageTk
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+# Initialise
+monitorOn = False
+graphOn = False
+
 currentSensor = 0
 clear = False
 
@@ -13,8 +18,8 @@ arrayTempList = {}
 monitorTempList = {}
 
 for n in range(6):
-    arrayTempList[f'sensor{n}'] = np.zeros(60, dtype=float)
-    monitorTempList[f'sensor{n}'] = np.array([0, 999])
+    arrayTempList[f'sensor{n}'] = np.zeros(data['graphSettings']['maxPoints'], dtype=float)
+    monitorTempList[f'sensor{n}'] = np.array([0.0, 999.0])
 
 
 def switchMonitor(frame, toggle):
@@ -22,7 +27,6 @@ def switchMonitor(frame, toggle):
     if toggle.get() == 1:
         monitorOn = True
         getTemp(frame)
-
     elif toggle.get() == 0:
         monitorOn = False
 
@@ -32,7 +36,6 @@ def switchGraph(frame, toggle):
     if toggle.get() == 1:
         graphOn = True
         updateGraphTemp(frame)
-
     elif toggle.get() == 0:
         graphOn = False
 
@@ -54,13 +57,12 @@ def monitorTemp():
 
     if monitorOn:
         if clear:
-            # Clear Highest & Lowest Temperature Each Sensor
+            # Set current temperature as highest & lowest temperature for currently selected sensor
             currentTemp = currentTempList[f'sensor{currentSensor}']
             monitorTempList[f'sensor{currentSensor}'] = currentTemp, currentTemp
             clear = False
         else:
-            # Get ALL Sensor Current Temperature
-            # Compare & Record Highest & Lowest Temperature Each Sensor
+            # Get each sensor current temperature & compare their highest (default = 0) & lowest temperature (default = 999)
             for n in range(6):
                 currentTemp = currentTempList[f'sensor{n}']
                 highestTemp, lowestTemp = monitorTempList[f'sensor{n}']
@@ -70,13 +72,13 @@ def monitorTemp():
                 if currentTemp < lowestTemp:
                     lowestTemp = currentTemp
 
+                # Update each sensor highest & lowest temperature
                 monitorTempList[f'sensor{n}'] = np.array([highestTemp, lowestTemp])
 
-        # Assign Selected Sensor Highest & Lowest Temperature for LiveLabel
+        # Get currently selected sensor highest & lowest temperature for LiveLabel
         currentTemp = currentTempList[f'sensor{currentSensor}']
         highestTemp, lowestTemp = monitorTempList[f'sensor{currentSensor}']
 
-        print(currentTemp, highestTemp, lowestTemp)
         return currentTemp, highestTemp, lowestTemp
 
 
@@ -88,25 +90,19 @@ def clearTemp():
 def getGraphTemp():
     global x, y, currentSensor
 
-    # Generate X Coordinates (Time)
-    x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'],
-                  data['graphSettings']['minPoints'])
+    # Generate X Coordinates (Time Array)
+    x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'], data['graphSettings']['minPoints'])
 
-    # Generate Y Coordinates (Temperature)
-    try:
+    # Generate Y Coordinates (Temperature Array)
+    if monitorOn:
         for n in range(6):
             array = np.append(arrayTempList[f'sensor{n}'], currentTempList[f'sensor{n}'])
             arrayTempList[f'sensor{n}'] = array[1:]
-    except:
-        pass
 
-    # Choose Selected Sensor Y Coordinates
-    for n in range(6):
-        if currentSensor == n:
-            y = arrayTempList[f'sensor{currentSensor}']
-            break
+    # Choose Selected Sensor as the Y Coordinates
+    y = arrayTempList[f'sensor{currentSensor}']
 
-    # Update Time Frame
+    # Update Time Array
     data['graphSettings']['minPoints'] += 1
 
 
@@ -116,28 +112,28 @@ def plotGraphTemp():
 
     # Configure Plot Graph Colours
     ax = plt.axes()
-    ax.tick_params(colors=data['graphColor']['axis'], which='both')  # Set Color to All Tick Parameters
-    for spine in ax.spines.values():  # Set Color to All Spine
-        spine.set_color(data['graphColor']['axis'])
+    ax.tick_params(colors=data['graphSettings']['axisColor'], which='both')     # Set Color to All Tick Parameters
+    for spine in ax.spines.values():
+        spine.set_color(data['graphSettings']['axisColor'])                     # Set Color to All Spine
 
     # Configure Plot Graph Legend
-    plt.xlabel('Time (s)', color=data['graphColor']['font'])  # Set Color X Label
-    plt.ylabel('Temperature (°C)', color=data['graphColor']['font'])  # Set Color Y Label
-    plt.ylim([1, 120])
+    plt.xlabel('Time (s)', color=data['graphSettings']['fontColor'])            # Set Color X Label
+    plt.ylabel('Temperature (°C)', color=data['graphSettings']['fontColor'])    # Set Color Y Label
+    plt.ylim([0, 120])                                                          # Set Graph Y Limits
 
     # Plot Graph & Save Graph as Transparent Image
-    plt.plot(x, y, color=data['graphColor']['line'])
+    plt.plot(x, y, color=data['graphSettings']['lineColor'])
     plt.savefig('graph.png', transparent=True)
     plt.close()
 
 
 def updateGraphTemp(frame):
     if graphOn:
-        getGraphTemp()  # Get Graph Temperature
-        plotGraphTemp()  # Plot Graph Coordinates
+        getGraphTemp()      # Get Graph Temperature
+        plotGraphTemp()     # Plot Graph Coordinates
 
-        # Configure Frame To Image
-        photo = ImageTk.PhotoImage(file="./graph.png")
+        # Configure Target Frame as Graph Image
+        photo = ImageTk.PhotoImage(file='./graph.png')
         frame.configure(image=photo)
         frame.after(data['graphSettings']['refreshRate'], lambda: updateGraphTemp(frame))
 
