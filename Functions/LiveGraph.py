@@ -94,10 +94,12 @@ def getGraphTemp():
     x = np.arange(data['graphSettings']['minPoints'] - data['graphSettings']['maxPoints'], data['graphSettings']['minPoints'])
 
     # Generate Y Coordinates (Temperature Array)
-    if monitorOn:
+    try:
         for n in range(6):
             array = np.append(arrayTempList[f'sensor{n}'], currentTempList[f'sensor{n}'])
             arrayTempList[f'sensor{n}'] = array[1:]
+    except:
+        pass
 
     # Choose Selected Sensor as the Y Coordinates
     y = arrayTempList[f'sensor{currentSensor}']

@@ -24,15 +24,15 @@
     "size": 10
   },
   "camSettings": {
-    "port": 0,
-    "resolutionWidth": 1080,
+    "port": 1,
+    "resolutionWidth": 1280,
     "resolutionHeight": 720,
-    "targetFPS": 30
+    "targetFPS": 60
   },
   "imageSettings": {
     "width": 705,
     "height": 405,
-    "targetFPS": 30
+    "targetFPS": 60
   },
   "graphSettings": {
     "refreshRate": 2000,
