@@ -1,6 +1,9 @@
 from GUI import *
+from Functions.ODrive import *
+from Functions.Steering import *
 
 liveLabelsList = {}     # Each Registered Label and LabelName List
+liveBarsList = {}       # Each Registered Bar and BarName List
 dataList = {}           # Each Received Data List
 
 
@@ -8,55 +11,87 @@ def registerLiveLabel(dataName, label):
     liveLabelsList.update({dataName: label})
 
 
+def registerLiveBar(dataName, bar):
+    liveBarsList.update({dataName: bar})
+
+
 def updateLiveLabel(frame):
     # All Data Comes Through Here
+    updateDashboardData()
+    updateControlData()
     updateCamData()
-    updateImageData()
     updateTempData()
 
     # Get Data and Matching Labels for Update
     for keyName in dataList:
+        # Configure Label Text
         if keyName in liveLabelsList:
             label = liveLabelsList.get(keyName)
-            value = str(dataList.get(keyName))
+            value = dataList.get(keyName)
             label.config(text=value)
-
+        
+        # Configure Bar Value
+        if keyName in liveBarsList:
+            bar = liveBarsList.get(keyName)
+            value = dataList.get(keyName)
+            bar.config(value=value)
+            
     frame.after(data['labelSettings']['refreshRate'], lambda: updateLiveLabel(frame))
 
 
+def updateDashboardData():
+    from Functions.LiveDashboard import monitorOn
+    
+    if monitorOn:
+        currentData = readODrive()
+
+        # Update ODrive Data
+        dataList.update({'batteryVoltage': str(currentData.get('voltageOD')) + ' V'})
+        dataList.update({'batteryTemp': str(currentData.get('tempOD')) + ' °C'})
+        dataList.update({'batteryTempBar': currentData.get('tempOD')})
+
+
+def updateControlData():
+    from Functions.LiveDashboard import controlCloseLoop
+    
+    if controlCloseLoop:
+        # Update Speed Data
+        currentData = readSpeed()
+        dataList.update({'speed': str(currentData.get('currentSpeed')) + ' Turns/s'})
+        dataList.update({'speedBar': currentData.get('percentageSpeed')})
+        
+        # Update Steering Data
+        currentData = readSteerAngle()
+        dataList.update({'steerAngle': str(currentData.get('currentSteerAngle')) + ' °'})
+        dataList.update({'steerAngleBar': currentData.get('percentageSteerAngle')})
+
+
 def updateCamData():
-    try:
-        widthResolution, heightResolution, targetFPS = camSettings()
-    except:
-        widthResolution, heightResolution, targetFPS = '', '', ''
-
-    # Update Camera Settings Data
-    dataList.update({'camResolution': str(widthResolution) + '×' + str(heightResolution)})
-    dataList.update({'camFPS': str(targetFPS) + ' FPS'})
-
-
-def updateImageData():
-    try:
-        imageWidth, imageHeight, imageFPS = imageSettings()
-    except:
-        imageWidth, imageHeight, imageFPS = '', '', ''
-
-    # Update Image Settings Data
-    dataList.update({'imageResolution': str(imageWidth) + '×' + str(imageHeight)})
-    dataList.update({'imageFPS': str(imageFPS) + ' FPS'})
+    from Functions.LiveCam import camOn
+    
+    if camOn:
+        currentCamSettings = camSettings()
+        currentImageSettings = imageSettings()
+        
+        # Update Camera Settings Data
+        dataList.update({'camResolution': str(currentCamSettings.get('widthResolution')) + '×' + str(currentCamSettings.get('heightResolution'))})
+        dataList.update({'camFPS': str(currentCamSettings.get('targetFPS')) + ' FPS'})
+        
+        # Update Image Settings Data
+        dataList.update({'imageResolution': str(currentImageSettings.get('imageWidth')) + '×' + str(currentImageSettings.get('imageHeight'))})
+        dataList.update({'imageFPS': str(currentImageSettings.get('imageFPS')) + ' FPS'})
 
 
 def updateTempData():
-    try:
-        currentTemp, highestTemp, lowestTemp = monitorTemp()
-    except:
-        currentTemp, highestTemp, lowestTemp = '', '', ''
+    from Functions.LiveGraph import monitorOn
 
-    # Update All Temperature Data
-    dataList.update({'highestTemp': str(highestTemp) + ' °C'})
-    dataList.update({'lowestTemp': str(lowestTemp) + ' °C'})
-    dataList.update({'currentTemp': str(currentTemp) + ' °C'})
+    if monitorOn:
+        currentSensorTemp = monitorTemp()
 
+        # Update All Temperature Data
+        dataList.update({'currentTemp': str(currentSensorTemp.get('current')) + ' °C'})
+        dataList.update({'highestTemp': str(currentSensorTemp.get('highest')) + ' °C'})
+        dataList.update({'lowestTemp': str(currentSensorTemp.get('lowest')) + ' °C'})
 
 
 print('Imported LiveLabels.py')

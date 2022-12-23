@@ -24,7 +24,7 @@
     "size": 10
   },
   "camSettings": {
-    "port": 1,
+    "port": 0,
     "resolutionWidth": 1280,
     "resolutionHeight": 720,
     "targetFPS": 60
