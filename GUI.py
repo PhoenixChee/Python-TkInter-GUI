@@ -880,15 +880,12 @@ def main():
 
     # Set theme
     sv.set_theme('dark')
-
-    # Set Widget Styles
-    style = ttk.Style(root)
-    style.configure('.', font=(data['fontSettings']['family'], data['fontSettings']['size']))
-    style.configure('T.Label', font=(data['fontSettings']['family'], data['fontSettings']['size']))
-
-    # Set Global Fonts
-    root.font = font.Font(family=data['fontSettings']['family'], size=data['fontSettings']['size'])
-    root.option_add('*Font', root.font)
+    
+    # Set Default Fonts
+    default_font = font.nametofont('SunValleyBodyFont')
+    default_font.configure(family=data['fontSettings']['family'], size=data['fontSettings']['size'])
+    default_font = font.nametofont('SunValleyBodyStrongFont')
+    default_font.configure(family=data['fontSettings']['family'], size=data['fontSettings']['size'])
 
     App(root).pack(expand=1, fill='both')
 

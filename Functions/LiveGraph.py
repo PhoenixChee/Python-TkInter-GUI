@@ -125,7 +125,7 @@ def plotGraphTemp():
 
     # Plot Graph & Save Graph as Transparent Image
     plt.plot(x, y, color=data['graphSettings']['lineColor'])
-    plt.savefig('Images/graph.png', transparent=True)
+    plt.savefig('./Images/graph.png', transparent=True)
     plt.close()
 
 

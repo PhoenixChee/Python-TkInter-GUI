@@ -3,7 +3,7 @@ import numpy as np
 currentODriveDict = {}
 
 oDriveInfolist = ['voltage', 'controlLoop', 'temp']
-motorInfoList = ['state', 'speed', 'current', 'calibrate', 'error', 'watahdogTimer']
+motorInfoList = ['state', 'speed', 'current', 'calibrate', 'error', 'watchdogTimer']
 
     
 def readODrive():
