@@ -1,4 +1,4 @@
-from GUI import *
+from GUI import data
 from Functions.Thermostat import *
 
 from PIL import ImageTk

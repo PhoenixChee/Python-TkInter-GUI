@@ -1,6 +1,8 @@
-from GUI import *
+from GUI import data
 from Functions.ODrive import *
 from Functions.Steering import *
+from Functions.LiveCam import camSettings, imageSettings
+from Functions.LiveGraph import monitorTemp
 
 liveLabelsList = {}     # Each Registered Label and LabelName List
 liveBarsList = {}       # Each Registered Bar and BarName List
@@ -43,9 +45,8 @@ def updateDashboardData():
     from Functions.LiveDashboard import monitorOn
     
     if monitorOn:
-        currentData = readODrive()
-
         # Update ODrive Data
+        currentData = readODrive()
         dataList.update({'batteryVoltage': str(currentData.get('voltageOD')) + ' V'})
         dataList.update({'batteryTemp': str(currentData.get('tempOD')) + ' °C'})
         dataList.update({'batteryTempBar': currentData.get('tempOD')})
@@ -56,28 +57,27 @@ def updateControlData():
     
     if controlCloseLoop:
         # Update Speed Data
-        currentData = readSpeed()
-        dataList.update({'speed': str(currentData.get('currentSpeed')) + ' Turns/s'})
-        dataList.update({'speedBar': currentData.get('percentageSpeed')})
+        currentSpeed = readSpeed()
+        dataList.update({'speed': str(currentSpeed.get('currentSpeed')) + ' Turns/s'})
+        dataList.update({'speedBar': currentSpeed.get('percentageSpeed')})
         
         # Update Steering Data
-        currentData = readSteerAngle()
-        dataList.update({'steerAngle': str(currentData.get('currentSteerAngle')) + ' °'})
-        dataList.update({'steerAngleBar': currentData.get('percentageSteerAngle')})
+        currentAngle = readSteerAngle()
+        dataList.update({'steerAngle': str(currentAngle.get('currentSteerAngle')) + ' °'})
+        dataList.update({'steerAngleBar': currentAngle.get('percentageSteerAngle')})
 
 
 def updateCamData():
     from Functions.LiveCam import camOn
     
     if camOn:
-        currentCamSettings = camSettings()
-        currentImageSettings = imageSettings()
-        
         # Update Camera Settings Data
+        currentCamSettings = camSettings()
         dataList.update({'camResolution': str(currentCamSettings.get('widthResolution')) + '×' + str(currentCamSettings.get('heightResolution'))})
         dataList.update({'camFPS': str(currentCamSettings.get('targetFPS')) + ' FPS'})
         
         # Update Image Settings Data
+        currentImageSettings = imageSettings()
         dataList.update({'imageResolution': str(currentImageSettings.get('imageWidth')) + '×' + str(currentImageSettings.get('imageHeight'))})
         dataList.update({'imageFPS': str(currentImageSettings.get('imageFPS')) + ' FPS'})
 
@@ -86,9 +86,8 @@ def updateTempData():
     from Functions.LiveGraph import monitorOn
 
     if monitorOn:
-        currentSensorTemp = monitorTemp()
-
         # Update All Temperature Data
+        currentSensorTemp = monitorTemp()
         dataList.update({'currentTemp': str(currentSensorTemp.get('current')) + ' °C'})
         dataList.update({'highestTemp': str(currentSensorTemp.get('highest')) + ' °C'})
         dataList.update({'lowestTemp': str(currentSensorTemp.get('lowest')) + ' °C'})

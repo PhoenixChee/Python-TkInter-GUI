@@ -1,5 +1,3 @@
-from GUI import *
-
 monitorOn = False
 controlCloseLoop = False
 

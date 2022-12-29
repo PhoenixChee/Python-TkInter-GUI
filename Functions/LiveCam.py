@@ -1,4 +1,4 @@
-from GUI import *
+from GUI import data
 from PIL import Image, ImageTk
 
 import cv2

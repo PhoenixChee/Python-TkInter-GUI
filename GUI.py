@@ -17,7 +17,7 @@ from Functions.LiveButtons import *
 from Functions.LiveDashboard import *
 from Functions.LiveCam import *
 from Functions.LiveGraph import *
-from Functions.LiveLabels import *
+from Functions.LiveLabels import registerLiveLabel, registerLiveBar, updateLiveLabel
 
 
 class Tab1(ttk.Frame):
