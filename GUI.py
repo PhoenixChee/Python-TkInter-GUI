@@ -1,4 +1,3 @@
-# TkInter Python GUI
 import tkinter as tk
 import sv_ttk as sv
 from tkinter import ttk, font, IntVar
@@ -407,150 +406,166 @@ class Tab1(ttk.Frame):
                 add_widgets_top(self).pack(fill='x', side='top')
                 add_widgets_bot(self).pack(fill='x', side='bottom')
 
-        class Box_6A(ttk.Labelframe):
-            def __init__(self, parent):
-                super().__init__(parent, text='Controls', padding=data['paddingSize']['labelFrame'])
-
-                class add_widgets_left(ttk.Frame):
-                    def __init__(self, parent):
-                        super().__init__(parent, padding=data['paddingSize']['frame'])
-
-                        for index in range(0, 6, 2):
-                            self.columnconfigure(index, weight=1, uniform='1', minsize=36)
-                        for index in range(1, 5, 2):
-                            self.columnconfigure(index, weight=0, minsize=6)
-                        for index in range(0, 3, 2):
-                            self.rowconfigure(index, weight=1, uniform='1', minsize=36)
-                        self.rowconfigure(1, weight=1, minsize=6)
-
-                        # Keyboard Buttons
-                        self.label_key_w = ttk.Button(self, style='Toggle.TButton', text='W', command=lambda: movementControls('up'))
-                        self.label_key_a = ttk.Button(self, style='Toggle.TButton', text='A', command=lambda: movementControls('down'))
-                        self.label_key_s = ttk.Button(self, style='Toggle.TButton', text='S', command=lambda: movementControls('left'))
-                        self.label_key_d = ttk.Button(self, style='Toggle.TButton', text='D', command=lambda: movementControls('right'))
-
-                        # Layout
-                        self.label_key_w.grid(row=0, column=2, sticky='NSEW')
-                        self.label_key_a.grid(row=2, column=0, sticky='NSEW')
-                        self.label_key_s.grid(row=2, column=2, sticky='NSEW')
-                        self.label_key_d.grid(row=2, column=4, sticky='NSEW')
-
-                        self.bindings()
-
-                    def bindings(self):
-                        root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_w, True))
-                        root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_w, False))
-                        root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_a, True))
-                        root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_a, False))
-                        root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_s, True))
-                        root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_s, False))
-                        root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_d, True))
-                        root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_d, False))
-
-                class add_widgets_right(ttk.Frame):
-                    def __init__(self, parent):
-                        super().__init__(parent, padding=data['paddingSize']['frame'])
-
-                        self.columnconfigure(0, weight=1, uniform='1', minsize=36*2)
-                        for index in range(0, 3, 2):
-                            self.rowconfigure(index, weight=1, uniform='1', minsize=36)
-                        self.rowconfigure(1, minsize=6)
-
-                        # Keyboard Buttons
-                        self.label_key_x = ttk.Button(self, style='Toggle.TButton', text='X', command=lambda: movementControls('brake'))
-
-                        # Layout
-                        self.label_key_x.grid(row=2, sticky='NSEW')
-
-                        self.bindings()
-
-                    def bindings(self):
-                        root.bind('<KeyPress-x>', lambda event: keyPress(self.label_key_x, True))
-                        root.bind('<KeyRelease-x>', lambda event: keyPress(self.label_key_x, False))
-
-                add_widgets_left(self).pack(side='left')
-                add_widgets_right(self).pack(side='right')
-                
-        class Box_6B(ttk.Labelframe):
+        class Box_6(ttk.Labelframe):
             def __init__(self, parent):
                 super().__init__(parent, text='Controls', padding=data['paddingSize']['labelFrame'])
                 
-                class add_widgets_top(ttk.Frame):
-                    def __init__(self, parent):
-                        super().__init__(parent, padding=data['paddingSize']['frame'])
+                if data['controlSettings']['controlType'] == 'keyboard':
+
+                    class add_widgets_left(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
+
+                            for index in range(0, 6, 2):
+                                self.columnconfigure(index, weight=1, uniform='1', minsize=36)
+                            for index in range(1, 5, 2):
+                                self.columnconfigure(index, weight=0, minsize=6)
+                            for index in range(0, 3, 2):
+                                self.rowconfigure(index, weight=1, uniform='1', minsize=36)
+                            self.rowconfigure(1, weight=1, minsize=6)
+
+                            # Keyboard Buttons
+                            self.label_key_w = ttk.Button(self, style='Toggle.TButton', text='W', command=lambda: movementControls('up'))
+                            self.label_key_a = ttk.Button(self, style='Toggle.TButton', text='A', command=lambda: movementControls('down'))
+                            self.label_key_s = ttk.Button(self, style='Toggle.TButton', text='S', command=lambda: movementControls('left'))
+                            self.label_key_d = ttk.Button(self, style='Toggle.TButton', text='D', command=lambda: movementControls('right'))
+
+                            # Layout
+                            self.label_key_w.grid(row=0, column=2, sticky='NSEW')
+                            self.label_key_a.grid(row=2, column=0, sticky='NSEW')
+                            self.label_key_s.grid(row=2, column=2, sticky='NSEW')
+                            self.label_key_d.grid(row=2, column=4, sticky='NSEW')
+
+                            self.bindings()
+
+                        def bindings(self):
+                            root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_w, True))
+                            root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_w, False))
+                            root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_a, True))
+                            root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_a, False))
+                            root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_s, True))
+                            root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_s, False))
+                            root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_d, True))
+                            root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_d, False))
+
+                    class add_widgets_right(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
+
+                            self.columnconfigure(0, weight=1, uniform='1', minsize=36*2)
+                            for index in range(0, 3, 2):
+                                self.rowconfigure(index, weight=1, uniform='1', minsize=36)
+                            self.rowconfigure(1, minsize=6)
+
+                            # Keyboard Buttons
+                            self.label_key_x = ttk.Button(self, style='Toggle.TButton', text='X', command=lambda: movementControls('brake'))
+
+                            # Layout
+                            self.label_key_x.grid(row=2, sticky='NSEW')
+
+                            self.bindings()
+
+                        def bindings(self):
+                            root.bind('<KeyPress-x>', lambda event: keyPress(self.label_key_x, True))
+                            root.bind('<KeyRelease-x>', lambda event: keyPress(self.label_key_x, False))
+
+                    add_widgets_left(self).pack(side='left')
+                    add_widgets_right(self).pack(side='right')
+                    
+                if data['controlSettings']['controlType'] == 'controller':
+                    
+                    class add_widgets_top(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
+                            
+                            # Controller Buttons
+                            self.label_key_lt = ttk.Button(self, style='Toggle.TButton', text='LT', command=lambda: movementControls('up'))
+                            self.label_key_lb = ttk.Button(self, style='Toggle.TButton', text='LB', command=lambda: movementControls('up'))
+                            self.label_key_rt = ttk.Button(self, style='Toggle.TButton', text='RT', command=lambda: movementControls('up'))
+                            self.label_key_rb = ttk.Button(self, style='Toggle.TButton', text='RB', command=lambda: movementControls('up'))
+                            
+                            # # Layout
+                            self.label_key_lt.pack(padx=(0, 2), side='left')
+                            self.label_key_lb.pack(padx=(2, 0), side='left')
+                            self.label_key_rt.pack(padx=(2, 0), side='right')
+                            self.label_key_rb.pack(padx=(0, 2), side='right')
                         
-                        # Controller Buttons
-                        self.label_key_lt = ttk.Button(self, style='Toggle.TButton', text='LT', command=lambda: movementControls('up'))
-                        self.label_key_lb = ttk.Button(self, style='Toggle.TButton', text='LB', command=lambda: movementControls('up'))
-                        self.label_key_rt = ttk.Button(self, style='Toggle.TButton', text='RT', command=lambda: movementControls('up'))
-                        self.label_key_rb = ttk.Button(self, style='Toggle.TButton', text='RB', command=lambda: movementControls('up'))
-                        
-                        # # Layout
-                        self.label_key_lt.pack(padx=(0, 3), side='left')
-                        self.label_key_lb.pack(padx=(3, 0), side='left')
-                        self.label_key_rt.pack(padx=(3, 0), side='right')
-                        self.label_key_rb.pack(padx=(0, 3), side='right')
-                        
+                    class add_widgets_left(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                class add_widgets_left(ttk.Frame):
-                    def __init__(self, parent):
-                        super().__init__(parent, padding=data['paddingSize']['frame'])
+                            # Keyboard Buttons
+                            self.label_key_up = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('up'))
+                            self.label_key_down = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('down'))
+                            self.label_key_left = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('left'))
+                            self.label_key_right = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('right'))
 
-                        # Keyboard Buttons
-                        self.label_key_up = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('up'))
-                        self.label_key_down = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('down'))
-                        self.label_key_left = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('left'))
-                        self.label_key_right = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('right'))
+                            # Layout
+                            self.label_key_left.pack(padx=(0, 3), side='left')
+                            self.label_key_right.pack(padx=(3, 0), side='right')
+                            self.label_key_up.pack(pady=(0, 2), side='top')
+                            self.label_key_down.pack(pady=(2, 0), side='top')
+                            
+                            self.bindings()
 
-                        # Layout
-                        self.label_key_left.pack(padx=(0, 3), side='left')
-                        self.label_key_right.pack(padx=(3, 0), side='right')
-                        self.label_key_up.pack(pady=(0, 2), side='top')
-                        self.label_key_down.pack(pady=(2, 0), side='top')
-                        
-                        self.bindings()
+                        def bindings(self):
+                            root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_up, True))
+                            root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_up, False))
+                            root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_left, True))
+                            root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_left, False))
+                            root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_down, True))
+                            root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_down, False))
+                            root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_right, True))
+                            root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_right, False))
 
-                    def bindings(self):
-                        root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_up, True))
-                        root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_up, False))
-                        root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_left, True))
-                        root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_left, False))
-                        root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_down, True))
-                        root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_down, False))
-                        root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_right, True))
-                        root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_right, False))
+                    class add_widgets_right(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
 
-                class add_widgets_right(ttk.Frame):
-                    def __init__(self, parent):
-                        super().__init__(parent, padding=data['paddingSize']['frame'])
+                            # Keyboard Buttons
+                            self.label_key_x = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('up'))
+                            self.label_key_y = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('down'))
+                            self.label_key_a = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('left'))
+                            self.label_key_b = ttk.Button(self, style='Toggle.TButton', text='  ', command=lambda: movementControls('right'))
 
-                        # Keyboard Buttons
-                        self.label_key_x = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('up'))
-                        self.label_key_y = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('down'))
-                        self.label_key_a = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('left'))
-                        self.label_key_b = ttk.Button(self, style='Toggle.TButton', text='   ', command=lambda: movementControls('right'))
+                            # Layout
+                            self.label_key_x.pack(padx=(0, 3), side='left')
+                            self.label_key_b.pack(padx=(3, 0), side='right')
+                            self.label_key_y.pack(pady=(0, 2), side='top')
+                            self.label_key_a.pack(pady=(2, 0), side='top')
 
-                        # Layout
-                        self.label_key_x.pack(padx=(0, 3), side='left')
-                        self.label_key_b.pack(padx=(3, 0), side='right')
-                        self.label_key_y.pack(pady=(0, 2), side='top')
-                        self.label_key_a.pack(pady=(2, 0), side='top')
+                            self.bindings()
 
-                        self.bindings()
+                        def bindings(self):
+                            root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_x, True))
+                            root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_x, False))
+                            root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_y, True))
+                            root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_y, False))
+                            root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_a, True))
+                            root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_a, False))
+                            root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_b, True))
+                            root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_b, False))
 
-                    def bindings(self):
-                        root.bind('<KeyPress-w>', lambda event: keyPress(self.label_key_x, True))
-                        root.bind('<KeyRelease-w>', lambda event: keyPress(self.label_key_x, False))
-                        root.bind('<KeyPress-a>', lambda event: keyPress(self.label_key_y, True))
-                        root.bind('<KeyRelease-a>', lambda event: keyPress(self.label_key_y, False))
-                        root.bind('<KeyPress-s>', lambda event: keyPress(self.label_key_a, True))
-                        root.bind('<KeyRelease-s>', lambda event: keyPress(self.label_key_a, False))
-                        root.bind('<KeyPress-d>', lambda event: keyPress(self.label_key_b, True))
-                        root.bind('<KeyRelease-d>', lambda event: keyPress(self.label_key_b, False))
+                    class add_widgets_bot(ttk.Frame):
+                        def __init__(self, parent):
+                            super().__init__(parent, padding=data['paddingSize']['frame'])
+                            
+                            # Controller Buttons
+                            self.label_key_lt = ttk.Button(self, style='Toggle.TButton', text='LT', command=lambda: movementControls('up'))
+                            self.label_key_lb = ttk.Button(self, style='Toggle.TButton', text='LB', command=lambda: movementControls('up'))
+                            self.label_key_rt = ttk.Button(self, style='Toggle.TButton', text='RT', command=lambda: movementControls('up'))
+                            self.label_key_rb = ttk.Button(self, style='Toggle.TButton', text='RB', command=lambda: movementControls('up'))
+                            
+                            # # Layout
+                            self.label_key_lt.pack(padx=(0, 2), side='left')
+                            self.label_key_lb.pack(padx=(2, 0), side='left')
+                            self.label_key_rt.pack(padx=(2, 0), side='right')
+                            self.label_key_rb.pack(padx=(0, 2), side='right')
 
-                add_widgets_top(self).pack(fill='x', side='top')
-                add_widgets_left(self).pack(side='left')
-                add_widgets_right(self).pack(side='right')
+                    add_widgets_top(self).pack(fill='x', side='top')
+                    add_widgets_bot(self).pack(fill='x', side='bottom')
+                    add_widgets_left(self).pack(side='left')
+                    add_widgets_right(self).pack(side='right')
 
         # Set Layout UI Boxes
         self.columnconfigure(0, weight=1, uniform='1')
@@ -565,8 +580,7 @@ class Tab1(ttk.Frame):
         Box_3(self).grid(row=3, column=0, columnspan=2, padx=(0, 4), pady=(4, 0), sticky='NSEW')
         Box_4(self).grid(row=1, column=2, padx=(4, 0), pady=(4, 4), sticky='NSEW')
         Box_5(self).grid(row=2, column=2, padx=(4, 0), pady=(4, 4), sticky='NSEW')
-        Box_6A(self).grid(row=3, column=2, padx=(4, 0), pady=(4, 0), sticky='NSEW')   # Keyboard Input Keys
-        Box_6B(self).grid(row=3, column=2, padx=(4, 0), pady=(4, 0), sticky='NSEW')   # Controller Input Keys
+        Box_6(self).grid(row=3, column=2, padx=(4, 0), pady=(4, 0), sticky='NSEW')
 
 
 class Tab2(ttk.Frame):
@@ -620,13 +634,13 @@ class Tab2(ttk.Frame):
                 self.label_4 = ttk.Label(self, text='Image FPS')
 
                 # LiveLabels
-                self.output_1 = ttk.Label(self)
+                self.output_1 = ttk.Label(self, text='-')
                 registerLiveLabel('camResolution', self.output_1)
-                self.output_2 = ttk.Label(self)
+                self.output_2 = ttk.Label(self, text='-')
                 registerLiveLabel('camFPS', self.output_2)
-                self.output_3 = ttk.Label(self)
+                self.output_3 = ttk.Label(self, text='-')
                 registerLiveLabel('imageResolution', self.output_3)
-                self.output_4 = ttk.Label(self)
+                self.output_4 = ttk.Label(self, text='-')
                 registerLiveLabel('imageFPS', self.output_4)
 
                 # Layout
@@ -737,6 +751,7 @@ class Tab3(ttk.Frame):
                 self.add_widgets()
 
             def add_widgets(self):
+                
                 # Sensor Buttons
                 self.var = IntVar()
                 self.radio_1 = ttk.Radiobutton(self, style='Toggle.TButton', variable=self.var, value=0, text='1', command=lambda: selectSensor(self.var))
@@ -788,11 +803,11 @@ class Tab3(ttk.Frame):
                         self.label_3 = ttk.Label(self, text='Lowest Temp')
 
                         # LiveLabels
-                        self.output_1 = ttk.Label(self)
+                        self.output_1 = ttk.Label(self, text='-')
                         registerLiveLabel('currentTemp', self.output_1)
-                        self.output_2 = ttk.Label(self)
+                        self.output_2 = ttk.Label(self, text='-')
                         registerLiveLabel('highestTemp', self.output_2)
-                        self.output_3 = ttk.Label(self)
+                        self.output_3 = ttk.Label(self, text='-')
                         registerLiveLabel('lowestTemp', self.output_3)
 
                         # Layout
@@ -866,8 +881,8 @@ def main():
 
     # Configure the root window
     root.title('GUI')
-    w = data['windowSize']['width']     # 1024px
-    h = data['windowSize']['height']    # 600px
+    w = data['windowSettings']['width']     # 1024px
+    h = data['windowSettings']['height']    # 600px
 
     # Calculate Starting X and Y coordinates for Window
     x = (root.winfo_screenwidth()/2) - (w/2)
@@ -875,13 +890,13 @@ def main():
 
     # Open window at the center of the screen and is borderless
     root.geometry('%dx%d+%d+%d'%(w, h, x, y))
-    root.overrideredirect(False)
-    root.resizable(width=False, height=False)
+    root.overrideredirect(data['windowSettings']['borderless'])
+    root.resizable(width=data['windowSettings']['resizable'], height=data['windowSettings']['resizable'])
 
     # Set theme
     sv.set_theme('dark')
     
-    # Set Default Fonts
+    # Set Default Fonts (TkDefaultFont/SunValleyBodyFont/SunValleyBodyStrongFont)
     default_font = font.nametofont('SunValleyBodyFont')
     default_font.configure(family=data['fontSettings']['family'], size=data['fontSettings']['size'])
     default_font = font.nametofont('SunValleyBodyStrongFont')
@@ -889,8 +904,7 @@ def main():
 
     App(root).pack(expand=1, fill='both')
 
-    # Initialise Registered Labels
-    updateLiveLabel(root)
+    updateLiveLabel(root)   # Initialise Registered Labels
     root.mainloop()
 
 

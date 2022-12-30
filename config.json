@@ -1,7 +1,12 @@
 {
-  "windowSize": {
+  "windowSettings": {
     "width": 1024,
-    "height": 600
+    "height": 600,
+    "borderless": false,
+    "resizable": false
+  },
+  "controlSettings": {
+    "controlType": "controller"
   },
   "columnSize": {
     "col1": 220,

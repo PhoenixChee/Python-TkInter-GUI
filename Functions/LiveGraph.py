@@ -6,8 +6,6 @@ from PIL import ImageTk
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# Initialise
 monitorOn = False
 graphOn = False
 
@@ -23,6 +21,7 @@ for n in range(6):
     monitorTempDict[f'sensor{n}'] = np.array([0.0, 999.0])
 
 
+# switchMonitor() starts monitoring temparature data
 def switchMonitor(frame, toggle):
     global monitorOn
     if toggle.get() == 1:
@@ -32,6 +31,7 @@ def switchMonitor(frame, toggle):
         monitorOn = False
 
 
+# switchGraph() turns on Graph & Update GraphTemp (array)
 def switchGraph(frame, toggle):
     global graphOn
     if toggle.get() == 1:
@@ -41,11 +41,13 @@ def switchGraph(frame, toggle):
         graphOn = False
 
 
+# selectSensor() gets the selected sensor from GUI
 def selectSensor(radio):
     global currentSensor
     currentSensor = radio.get()
 
 
+# getTemp() gets temperature data from Thermostat
 def getTemp(frame):
     global currentTempDict
     if monitorOn:
@@ -53,6 +55,7 @@ def getTemp(frame):
         frame.after(data['dataSettings']['pollingRate'], lambda: getTemp(frame))
 
 
+# monitorTemp() records and return the Temperature data 
 def monitorTemp():
     global clear, currentTempDict, currentTemp, highestTemp, lowestTemp
 
@@ -82,11 +85,13 @@ def monitorTemp():
     return currentSensorTemp
 
 
+# clearTemp() to clears Highest & Lowest Recorded Temperature
 def clearTemp():
     global clear
     clear = True
 
 
+# getGraphTemp() updates new temperature data into data
 def getGraphTemp():
     global x, y, currentSensor
 
@@ -108,6 +113,7 @@ def getGraphTemp():
     data['graphSettings']['minPoints'] += 1
 
 
+# plotGraphTemp configures graph and plot coordinates
 def plotGraphTemp():
     # Clear Plots
     plt.clf()
@@ -129,6 +135,7 @@ def plotGraphTemp():
     plt.close()
 
 
+# updateGraphTemp() update Graph Temperature Image
 def updateGraphTemp(frame):
     if graphOn:
         getGraphTemp()      # Get Graph Temperature

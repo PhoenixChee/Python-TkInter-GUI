@@ -8,6 +8,7 @@ currentCamSettings = {}
 currentImageSettings = {}
 
 
+# switchCamera() sets up and configures the camera
 def switchCamera(frame, toggle):
     global camOn, cap
 
@@ -29,6 +30,7 @@ def switchCamera(frame, toggle):
         frame.configure(image='')
 
 
+# showFrames() reads the captured frames and display them as a image using Pillow
 def showFrames(frame):
     if camOn:
         # Capture Video Frames & Convert to OpenCV (BGR) to PIL (RGB) Color Convention Format
@@ -43,6 +45,7 @@ def showFrames(frame):
         frame.after(int(1000/data['imageSettings']['targetFPS']), lambda: showFrames(frame))
 
 
+# camSettings() gets the actual camera configurations
 def camSettings():
     currentCamSettings['widthResolution'] = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     currentCamSettings['heightResolution'] = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -51,6 +54,7 @@ def camSettings():
     return currentCamSettings
 
 
+# imageSettings() gets the actual image configurations
 def imageSettings():
     currentImageSettings['imageWidth'] = data['imageSettings']['width']
     currentImageSettings['imageHeight'] = data['imageSettings']['height']

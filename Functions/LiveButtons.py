@@ -1,5 +1,8 @@
 from GUI import *
 
+# FRAMES in Tk lets you organise and group widgets. It works like a container in which widgets can be placed.
+# WIDGETS are the little components or controls of the Graphical User Interface (GUI) such as buttons, labels, scrollbars, radio buttons, and text boxes used in a GUI application.
+
 
 # systemPower() toggles all children state (Enabled/Disabled) to be interacted
 def systemGUI(frame, toggle):
@@ -68,8 +71,3 @@ def shouldToggle(frame):
 
 
 print('Imported LiveButtons.py')
-
-
-# Frames in Tk lets you organise and group widgets. It works like a container in which widgets can be placed.
-
-# Widgets are the little components or controls of the Graphical User Interface (GUI) such as buttons, labels, scrollbars, radio buttons, and text boxes used in a GUI application.
