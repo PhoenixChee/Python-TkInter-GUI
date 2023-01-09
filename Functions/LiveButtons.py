@@ -22,6 +22,14 @@ def systemShutdown(root):
     root.destroy()
 
 
+# keyState() returns the key and its state
+def keyState(key, press):
+    if (press):
+        return f'<KeyPress-{key}>'
+    else:
+        return f'<KeyRelease-{key}>'
+
+
 # keyPress() changes the widget state to selected (highlight) when pressed
 def keyPress(widget, pressed):
     # If the button is disabled don't do anything

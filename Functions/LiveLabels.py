@@ -1,6 +1,6 @@
 from GUI import data
-from Functions.ODrive import *
-from Functions.Steering import *
+from Datas.ODrive import *
+from Datas.Steering import *
 from Functions.LiveCam import camSettings, imageSettings
 from Functions.LiveGraph import monitorTemp
 

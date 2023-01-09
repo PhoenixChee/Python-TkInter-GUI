@@ -1,5 +1,5 @@
 from GUI import data
-from Functions.Thermostat import *
+from Datas.Thermostat import *
 
 from PIL import ImageTk
 

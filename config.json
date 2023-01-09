@@ -8,6 +8,21 @@
   "controlSettings": {
     "controlType": "controller"
   },
+  "keyboardKeybinds": {
+    "speedUp": "w",
+    "speedDown": "s",
+    "steerLeft": "a",
+    "steerRight": "d",
+    "speedBrake": "b"
+  },
+  "controllerKeybinds": {
+    "speedUp": "w",
+    "speedDown": "s",
+    "steerLeft": "a",
+    "steerRight": "d",
+    "speedBrake": "b",
+    "steercenter": "y"
+  },
   "columnSize": {
     "col1": 220,
     "col2": 440
